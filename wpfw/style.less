@@ -506,6 +506,30 @@ body
 		ul
 		{
 			.arrowList;
+
+			> li > ul
+			{
+				margin-top: 5px;
+				margin-bottom: 25px;
+
+				> li
+				{
+					padding-left: 0;
+					line-height: 1.1em;
+
+					&:before
+					{
+						display: none;
+					}
+
+					> a
+					{
+						font-size: 13px;
+						letter-spacing: -1px;
+						line-height: 1.2em;
+					}
+				}
+			}
 		}
 
 		ul.toc_widget_list
