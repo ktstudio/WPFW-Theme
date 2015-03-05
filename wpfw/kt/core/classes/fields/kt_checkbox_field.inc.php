@@ -23,7 +23,7 @@ class KT_Checkbox_Field extends KT_Options_Field_Base {
      * Provede výpis fieldu pomocí echo $this->getField()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      */
     public function renderField() {
@@ -34,37 +34,33 @@ class KT_Checkbox_Field extends KT_Options_Field_Base {
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
     public function getField() {
 
-        if (kt_not_isset_or_empty($this->getOptionsData())) {
-            return "<span class=\"input-wrap checkbox\">" . KT_EMPTY_TEXT . "</span>";
+        if (KT::notIssetOrEmpty($this->getOptionsData())) {
+            return "<span class=\"input-wrap checkbox\">" . KT_EMPTY_SYMBOL . "</span>";
         }
-
+        
         $html = "";
 
         foreach ($this->getOptionsData() as $key => $val) {
             $html .= "<span class=\"input-wrap\">";
             $html .= "<input type=\"checkbox\" ";
-            $html .= $this->getBasicHtml();
-            $html .= "value=\"$key\" ";
+            $html .= $this->getBasicHtml( $key );
+            $html .= " value=\"$key\" ";
 
             $data = $this->getValue();
 
-            if (kt_isset_and_not_empty($data) && is_array($data)) {
-                if (in_array($key, $data)) {
+            if (KT::issetAndNotEmpty($data) && is_array($data)) {
+                if (in_array($key, array_keys($data))) {
                     $html .=" checked=\"checked\"";
                 }
             }
 
-            if (kt_isset_and_not_empty($data) && !is_array($data)) {
-                $html .= " checked=\"checked\"";
-            }
-
-            $html .= "> <span class=\"desc-checkbox-{$this->getId()}\">$val</span> ";
+            $html .= "> <span class=\"desc-checkbox-{$this->getAttrValueByName("id")}\"><label for=\"{$this->getName()}-{$key}\">$val</label></span> ";
 
             if ($this->hasErrorMsg()) {
                 $html .= parent::getHtmlErrorMsg();
@@ -78,6 +74,50 @@ class KT_Checkbox_Field extends KT_Options_Field_Base {
 
     public function getFieldType() {
         return self::FIELD_TYPE;
+    }
+    
+     /**
+     * Vrátí základní HTML prvky pro všechny fieldy
+     * Class, Name, ID, Title(tooltip), validator jSON
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     * @param string $inputName
+     * @return string
+     */
+    public function getBasicHtml( $inputName = null ) {
+
+        $html = "";
+        
+        $this->validatorJsonContentInit();
+        $this->setAttrId($this->getName() . "-" . $inputName);
+        $html .= $this->getNameAttribute( $inputName );
+        $html .= $this->getAttributeString();
+
+        return $html;
+    }
+    
+    /**
+     * Vrátí HTML s attributem name fieldu
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $inputName
+     * @return string
+     */
+    protected function getNameAttribute( $inputName = null ) {
+
+        $html = "";
+
+        if (KT::issetAndNotEmpty($this->getPostPrefix())) {
+            $html .= "name=\"{$this->getPostPrefix()}[{$this->getName()}][$inputName]\" ";
+        } else {
+            $html .= "name=\"{$this->getName()}[$inputName]\" ";
+        }
+
+        return $html;
     }
 
 }

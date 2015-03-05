@@ -6,14 +6,15 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     const DEFAULT_LARGE_SIZE = "large";
 
     private $excludeThumbnail = true;
+    private $customImageIds;
     private $thumbnailSize = self::DEFAULT_THUMBNAIL_SIZE;
     private $largeSize = self::DEFAULT_LARGE_SIZE;
 
     /**
      * Objekt pro základní práci s obrázky přiřazené k postu
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param WP_Post $post
      */
@@ -28,6 +29,13 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
      */
     private function getExcludeThumbnail() {
         return $this->excludeThumbnail;
+    }
+
+    /**
+     * @return array
+     */
+    private function getCustomImageIds() {
+        return $this->customImageIds;
     }
 
     /**
@@ -49,7 +57,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Nastaví, zda se má z kolekce obrázků odstranit náhledový obrázek zadaného postu.
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @param type $bool
@@ -64,10 +72,22 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     }
 
     /**
+     * Nastaví pole vlastních (výhradních) IDs obrázků do galerie (WP_Query -> post__in)
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz 
+     * 
+     * @param array $customImageIds
+     */
+    public function setCustomImageIds(array $customImageIds) {
+        $this->customImageIds = $customImageIds;
+    }
+
+    /**
      * Nastaví velikost obrázku, která bude použita jaké náhled
      * Pouze Wordpress image size - add_image_size();
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @param string $thumbnailSize
@@ -79,7 +99,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Nastaveí velikost obrázku, která se bude použivát jako cíl odkazu
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @param string $largeSize
@@ -96,8 +116,8 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Vrátí HTML s celou galerií včetně obrázků, linků a atributů - viz parametry
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param type $id // html id containeru
      * @param type $class // html class containeru
@@ -106,17 +126,28 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
      * @param type $withSelfLink // mají mít obrázky odkaz sami na sebe pro large velikost?
      * @return string
      */
-    public function getImageGallery($id = "ktGalleryContainer", $class = "ktGallery", $imgClass = null, $attr = array(), $withSelfLink = true) {
+    public function getImageGallery($imgClass = null, $attr = array(), $withSelfLink = true) {
 
         $html = "";
 
-        if (kt_not_isset_or_empty($this->getFiles())) {
+        if (KT::notIssetOrEmpty($this->getFiles())) {
             return $html;
         }
+        
+        if(KT_Functions::notIssetOrEmpty($this->getAttrValueByName("id"))){
+            $this->setAttrId("ktGalleryContainer");
+        }
+        
+        if(KT_Functions::notIssetOrEmpty($this->getAttrClassString())){
+            $this->addAttrClass("ktGallery");
+        }
+        
+        $this->addAttrClass("postGalleryId-" . $this->getPost()->ID)
+                ->addAttrClass($this->getPost()->post_type);
 
         $html .= $this->getContainerHeader();
 
-        $html .= "<div id=\"$id postGalleryId-{$this->getPost()->ID}\" class=\"$class {$this->getPost()->post_type}\">";
+        $html .= "<div {$this->getAttributeString()}>";
 
         foreach ($this->getFiles() as $image) {
             /* @var $image \WP_Post */
@@ -145,7 +176,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Provede inicializaci a načtení všech obrázků dle zadaného Post objektu a nastavení
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @return \KT_WP_Post_Gallery
@@ -155,15 +186,25 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
         $queryArgs = array(
             "post_type" => KT_WP_ATTACHMENT_KEY,
             "post_status" => "inherit",
-            "post_parent" => $this->getPost()->ID,
             "posts_per_page" => $this->getNumberFiles(),
             "post_mime_type" => "image",
             "orderby" => $this->getOrderby(),
             "order" => $this->getOrder()
         );
 
+        $customImageIds = $this->getCustomImageIds();
+        $isCustomImageIds = KT::arrayIssetAndNotEmpty($customImageIds);
         if ($this->getExcludeThumbnail()) {
-            $queryArgs["exclude"] = get_post_thumbnail_id($this->getPost()->ID);
+            $thumbnailId = get_post_thumbnail_id($this->getPost()->ID);
+            $queryArgs["post__not_in"] = array($thumbnailId);
+            if ($isCustomImageIds) {
+                $customImageIds = KT::arrayRemoveByValue($customImageIds, $thumbnailId);
+            }
+        }
+        if ($isCustomImageIds) {
+            $queryArgs["post__in"] = $customImageIds;
+        } else {
+            $queryArgs["post_parent"] = $this->getPost()->ID;
         }
 
         $images = new WP_Query($queryArgs);
@@ -178,7 +219,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Na základě předaných parametrů zhotoví <a> tag, který odkazuje na large velikost
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @param array $large // data obrázku wp_get_attachment_image_src()
@@ -188,7 +229,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
      */
     private function getLinkTagToLargeImage(array $large, array $attr = array(), $title) {
 
-        if (kt_isset_and_not_empty($attr) && is_array($attr)) {
+        if (KT::issetAndNotEmpty($attr) && is_array($attr)) {
             foreach ($attr as $attrName => $attrValue) {
                 $htmlAttr = " $attrName = \"$attrValue\" ";
             }
@@ -200,7 +241,7 @@ class KT_WP_Post_Gallery extends KT_WP_Post_Attachments_Base {
     /**
      * Na základě předaných parametrů zhotoví <img> tag s obrázek dle zvolené velikosti
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @param WP_Post $image // objektu obrázku

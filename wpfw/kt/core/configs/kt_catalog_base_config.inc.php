@@ -7,13 +7,6 @@
  * @link http://www.ktstudio.cz
  */
 class KT_Catalog_Base_Config {
-
-    const ID = "id";
-    const TITLE = "title";
-    const DESCRIPTION = "description";
-    const CODE = "code";
-    const VISIBILITY = "visibility";
-
     // --- fieldsets ---------------------------
 
     /**
@@ -31,38 +24,74 @@ class KT_Catalog_Base_Config {
         $fieldset = new KT_Form_Fieldset($name, $title);
         $fieldset->setPostPrefix($prefix);
 
-        $titleField = $fieldset
-                ->addText(self::getPrefixedKey($prefix, self::TITLE), __("Název: ", KT_DOMAIN))
+        $fieldset->addText(KT_Catalog_Base_Model::TITLE_COLUMN, __("Název: ", KT_DOMAIN))
                 ->addRule(KT_Field_Validator::REQUIRED, "Název je povinná položka")
                 ->addRule(KT_Field_Validator::MIN_LENGTH, __("Název musí mít alespoň 3 znaky"), 3)
-                ->addRule(KT_Field_Validator::MAX_LENGTH, __("Název může mít maximálně 30 znaků"), 30);
+                ->addRule(KT_Field_Validator::MAX_LENGTH, __("Název může mít maximálně 50 znaků"), 50);
 
-        $descriptionField = $fieldset
-                ->addTextarea(self::getPrefixedKey($prefix, self::DESCRIPTION), __("Popis: ", KT_DOMAIN))
+        $fieldset->addTextarea(KT_Catalog_Base_Model::DESCRIPTION_COLUMN, __("Popis: ", KT_DOMAIN))
                 ->setRows(5)
                 ->setTooltip(__("Doplňující údaj informačního charakteru...", KT_DOMAIN));
 
-        $codeField = $fieldset
-                ->addText(self::getPrefixedKey($prefix, self::CODE), __("Kód: ", KT_DOMAIN))
-                ->addRule(KT_Field_Validator::REQUIRED, "Kód je povinná položka")
-                ->addRule(KT_Field_Validator::MIN_LENGTH, __("Kód musí mít alespoň 2 znaky"), 2)
-                ->addRule(KT_Field_Validator::MAX_LENGTH, __("Kód může mít maximálně 10 znaků"), 10);
+        $fieldset->addText(KT_Catalog_Base_Model::CODE_COLUMN, __("Kód: ", KT_DOMAIN))
+                ->addRule(KT_Field_Validator::MAX_LENGTH, __("Kód může mít maximálně 30 znaků"), 30);
 
-        $visibilityField = $fieldset
-                ->addSwitch(self::getPrefixedKey($prefix, self::VISIBILITY), __("Viditelnost: ", KT_DOMAIN))
+        $fieldset->addSwitch(KT_Catalog_Base_Model::VISIBILITY_COLUMN, __("Viditelnost: ", KT_DOMAIN))
+                ->setValue(KT_Switch_Field::YES)
                 ->addRule(KT_Field_Validator::REQUIRED, "Viditelnost je povinná položka");
 
-        if (kt_isset_and_not_empty($item) && $item->isInDatabase()) {
-            $fieldset->addHidden(self::getPrefixedKey($prefix, self::ID))
+        if (KT::issetAndNotEmpty($item) && $item->isInDatabase()) {
+            $fieldset->addHidden(KT_Catalog_Base_Model::ID_COLUMN)
                     ->setValue($item->getId());
 
-            $titleField->setValue($item->getTitle());
-            $descriptionField->setValue($item->getDescription());
-            $codeField->setValue($item->getCode());
-            $visibilityField->setValue($item->getVisibility());
+            $fieldset->setFieldsData($item->getData());
         }
 
         return $fieldset;
+    }
+
+    // --- CRUD Admin List ------------------
+
+    /**
+     * Vrátí základní sadu sloupců pro KT_CRUD_Admin_List
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $className
+     * @param string $tableName
+     * @param string $templateTitle
+     * @return \KT_CRUD_Admin_List
+     */
+    public static function getCatalogCrudList($className, $tableName, $templateTitle = null) {
+        $crudList = new KT_CRUD_Admin_List($className, $tableName);
+        $crudList->setTemplateTitle($templateTitle);
+
+        $crudList->addColumn(KT_Catalog_Base_Model::TITLE_COLUMN)
+                ->setType(KT_CRUD_Admin_Column::EDIT_LINK_TYPE)
+                ->setDeletable()
+                ->setLabel(__("Titulek", KT_DOMAIN));
+
+        //$crudList->addColumn(KT_Catalog_Base_Model::DESCRIPTION_COLUMN)
+        //        ->setLabel(__("Popisek", KT_DOMAIN));
+
+        $crudList->addColumn(KT_Catalog_Base_Model::CODE_COLUMN)
+                ->setLabel(__("Kód", KT_DOMAIN));
+
+        //$crudList->addColumn(KT_Catalog_Base_Model::MENU_ORDER_COLUMN)
+        //        ->setLabel(__("Pořadí", KT_DOMAIN));
+
+        $crudList->addColumn(KT_Catalog_Base_Model::VISIBILITY_COLUMN)
+                ->setType(KT_CRUD_Admin_Column::SWITCH_BUTTON_TYPE)
+                ->setPosition(99)
+                ->setLabel(__("Viditelnost", KT_DOMAIN));
+
+        // výchozí řazení
+        $crudList->getRepository()
+                ->addOrder(KT_Catalog_Base_Model::MENU_ORDER_COLUMN, KT_Repository::ORDER_ASC)
+                ->addOrder(KT_Catalog_Base_Model::TITLE_COLUMN, KT_Repository::ORDER_ASC);
+
+        return $crudList;
     }
 
     // --- helpers ---------------------------

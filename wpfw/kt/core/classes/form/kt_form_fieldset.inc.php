@@ -1,20 +1,20 @@
 <?php
 
-class KT_Form_Fieldset {
+class KT_Form_Fieldset extends KT_HTML_Tag_Base {
 
     private $title = null;
     private $description = null;
     private $name = null;
     private $postPrefix = null;
-    private $classes = array('kt_fieldset');
-    private $id = null;
     private $fields = array();
     private $serializeSave = false;
 
     public function __construct($name, $title = null, $description = null) {
-        $this->setName($name);
-        $this->setTitle($title);
-        $this->setDescription($description);
+        $this->setName($name)
+                ->addAttrClass("kt_fieldset")
+                ->setAttrId($name)
+                ->setTitle($title)
+                ->setDescription($description);
 
         return $this;
     }
@@ -33,20 +33,6 @@ class KT_Form_Fieldset {
      */
     public function getDescription() {
         return $this->description;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClasses() {
-        return $this->classes;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId() {
-        return $this->id;
     }
 
     /**
@@ -83,7 +69,7 @@ class KT_Form_Fieldset {
      * Nastaveí titulek fieldsetu, který se bude v případě výpisu zobrazovat jako nadpis před sadou fildů
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param type $title
      * @return \KT_Form_Fieldset
@@ -97,7 +83,7 @@ class KT_Form_Fieldset {
      * Nastaveí popisek fieldsetu, který se bude v případě výpisu zobrazovat jako text pod nadpisem
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param type $description
      * @return \KT_Form_Fieldset
@@ -111,7 +97,7 @@ class KT_Form_Fieldset {
      * Nastavení název (hash) fieldsetu pro použití v PhP - je použit jako identifikátor v kolekci fieldsetů ve formu
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param type $name
      * @return \KT_Form_Fieldset
@@ -125,7 +111,7 @@ class KT_Form_Fieldset {
      * Nastavení prefix pro svou kolekci fieldsetů - postu pak budou dostupné pole pod tímto hashem, kde budou všechny  hodnoty fieldsety
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @param type $postPrefix
      * @return \KT_Form_Fieldset
@@ -139,38 +125,10 @@ class KT_Form_Fieldset {
     }
 
     /**
-     * Nastaví pole všech class, které budou ve fieldsetu zobrazeny
-     * 
-     * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz  
-     * 
-     * @param type $classes
-     * @return \KT_Form_Fieldset
-     */
-    public function setClasses(array $classes) {
-        $this->classes = $classes;
-        return $this;
-    }
-
-    /**
-     * Nastaví id tagu fieldsetu
-     * 
-     * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz   
-     * 
-     * @param type $id
-     * @return \KT_Form_Fieldset
-     */
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
      * Nastaveí kolekci fieldů - nepřidá, pouze nastavuje!
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz  
+     * @link http://www.ktstudio.cz  
      * 
      * @param type $fields
      * @return \KT_Form_Fieldset
@@ -184,7 +142,7 @@ class KT_Form_Fieldset {
      * Pokud je nastaveno true, všechny fieldy se uloží jako serializované pole pod názvem fieldsetu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param type $serializeSave
      * @return \KT_Form_Fieldset
@@ -203,7 +161,7 @@ class KT_Form_Fieldset {
      * Vrátí, zda některý z fieldů má nastavenou chybovou hlášku a neprošel tedy validací.
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @return boolean
      */
@@ -227,7 +185,7 @@ class KT_Form_Fieldset {
      * Vrátí field objekt na základě zvoleného názvu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @return \KT_Field
@@ -241,7 +199,7 @@ class KT_Form_Fieldset {
      * Odstraní field z kolekce filedsetu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param type $name
      * @return \KT_Form_Fieldset
@@ -260,13 +218,13 @@ class KT_Form_Fieldset {
      * Načte data k fieldům na zakladě předaného pole $field->getName() => $value
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param array $fieldsData
      */
     public function setFieldsData($fieldsData) {
 
-        if (kt_not_isset_or_empty($fieldsData) || !is_array($fieldsData)) {
+        if (KT::notIssetOrEmpty($fieldsData) || !is_array($fieldsData)) {
             return $this;
         }
 
@@ -279,12 +237,12 @@ class KT_Form_Fieldset {
             $fieldValue = $fieldsData[$field->getName()];
 
             if ($field->getFieldType() == KT_Text_Field::FIELD_TYPE) {
-                if ($field->getInputType() == KT_Text_Field::INPUT_DATE && kt_isset_and_not_empty($fieldValue)) {
+                if ($field->getInputType() == KT_Text_Field::INPUT_DATE && KT::issetAndNotEmpty($fieldValue)) {
                     $fieldValue = date("d.m.Y", $fieldValue);
                 }
             }
 
-            if (kt_isset_and_not_empty($fieldValue) || $fieldValue === "0" || $fieldValue === 0) {
+            if (KT::issetAndNotEmpty($fieldValue) || $fieldValue === "0" || $fieldValue === 0) {
                 $field->setValue($fieldValue);
             }
         }
@@ -296,7 +254,7 @@ class KT_Form_Fieldset {
      * Přidá do kolekce fieldů další fieldy na základě předaného pole
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param array $fields
      * @return \KT_Form
@@ -313,15 +271,79 @@ class KT_Form_Fieldset {
     }
 
     /**
+     * Do kolekce fieldů přidá jeden field
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @param KT_Field $field
+     * @return \KT_Form_Fieldset
+     */
+    public function addField(KT_Field $field) {
+        $field->setPostPrefix($this->getPostPrefix());
+        $fieldsCollection = $this->getFields();
+        $fieldsCollection[$field->getName()] = $field;
+        $this->setFields($fieldsCollection);
+
+        return $this;
+    }
+
+    /**
+     * Vrátí pole s daty z GETu na základě nastaveného post prefixu
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @return array
+     */
+    public function getDataFromGet() {
+        if (KT::notIssetOrEmpty($_GET)) {
+            return array();
+        }
+        $postPrefix = $this->getPostPrefix();
+        if (KT::issetAndNotEmpty($postPrefix)) {
+            if (array_key_exists($postPrefix, $_GET)) {
+                return $_GET[$postPrefix];
+            }
+            return array();
+        }
+        return $_GET;
+    }
+
+    /**
+     * Vrátí pole s daty z POSTu na základě nastaveného post prefixu
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @return array
+     */
+    public function getDataFromPost() {
+        if (KT::notIssetOrEmpty($_POST)) {
+            return array();
+        }
+        $postPrefix = $this->getPostPrefix();
+        if (KT::issetAndNotEmpty($postPrefix)) {
+            if (array_key_exists($postPrefix, $_POST)) {
+                return $_POST[$postPrefix];
+            }
+            return array();
+        }
+        return $_POST;
+    }
+
+    /**
      * Vrátí HTML v podobě tabulky s inputy dle field setu, nadpisem a kontainerem
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $class - CSS Class tabulky
      *
      * @return string - HTML
      *
      */
-    public function getInputsToTable() {
+    public function getInputsToTable($class = null) {
 
         $html = "";
 
@@ -329,7 +351,7 @@ class KT_Form_Fieldset {
 
             $html .= $this->getStartHtmlOfFieldSet();
 
-            $html .= "<table class=\"kt-form-table\">";
+            $html .= "<table class=\"kt-form-table $class\">";
 
             foreach ($this->getFields() as $field) {
                 if ($field->getFieldType() != KT_Hidden_Field::FIELD_TYPE) {
@@ -357,7 +379,7 @@ class KT_Form_Fieldset {
      * Usage: $this->getInputsToTable()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param KT_Field $field
      * @return string
@@ -365,8 +387,8 @@ class KT_Form_Fieldset {
     public function getInputToTr(KT_Field $field) {
         $html = "<tr>";
 
-        if (kt_isset_and_not_empty($field->getLabel())) {
-            $html .= "<td><label for=\" {$field->getName()} \"> {$field->getLabel()} </label></td>";
+        if (KT::issetAndNotEmpty($field->getLabel())) {
+            $html .= "<td><label for=\"{$field->getName()}\">{$field->getLabel()}</label></td>";
         }
 
         $html .= "<td>{$field->getField()}</td>";
@@ -379,7 +401,7 @@ class KT_Form_Fieldset {
      * Vrátí HTML string s inputy bez tabulky - vypíše pouze inputy bez struktury
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string - HTML
      */
@@ -398,7 +420,7 @@ class KT_Form_Fieldset {
 
             $html .= "<div class=\"kt-field-simple-container\">";
 
-            if (kt_isset_and_not_empty($fieldLabel) && $displayLables) {
+            if (KT::issetAndNotEmpty($fieldLabel) && $displayLables) {
                 $html .= "<label for=\"{$field->getName()}\">{$fieldLabel}</label>";
             }
 
@@ -416,19 +438,21 @@ class KT_Form_Fieldset {
      * Vrátí HTML hlavičku s nastavení fieldSetu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string HTML
      */
-    public function getStartHtmlOfFieldSet() {
-        $html = "<div id=\"{$this->getId()}\" class=\"kt_fieldset {$this->getClassesString()} panel panel-default\">";
+    public function getStartHtmlOfFieldSet($fieldsetTag = true) {
+        $html = "<div {$this->getAttributeString()}>";
 
-        if (kt_isset_and_not_empty($this->getTitle())) {
+        if (KT::issetAndNotEmpty($this->getTitle())) {
             $html .= "<div class=\"panel-heading\"><h2 class=\"panel-title\">{$this->getTitle()}</h2></div>";
         }
 
-        $html .= "<fieldset class=\"panel-body\">";
-        if (kt_isset_and_not_empty($this->getDescription())) {
+        $tag = $fieldsetTag ? "fieldset" : "div";
+
+        $html .= "<$tag class=\"panel-body\">";
+        if (KT::issetAndNotEmpty($this->getDescription())) {
             $html .= "<p class=\"fieldset-description\">{$this->getDescription()}</p>";
         }
 
@@ -439,12 +463,13 @@ class KT_Form_Fieldset {
      * Vrátí ukončení HTML pro hlavičku FieldSetu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string HTML
      */
-    public function getEndHtmlOfFieldSet() {
-        return "</fieldset></div>";
+    public function getEndHtmlOfFieldSet($fieldsetTag = true) {
+        $tag = $fieldsetTag ? "fieldset" : "div";
+        return "</$tag></div>";
     }
 
     /**
@@ -452,12 +477,15 @@ class KT_Form_Fieldset {
      * Pokud nemá fieldset žádné fieldy vrací null
      * Pokud jsou všechny fieldy bez dat vrací null
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @param array $excludeFields - které filedy se nebudou zobrazovat $field->name
+     * @param string $class
      *
-     * @return mixed
+     * @return string
      */
-    public function getInputsDataToTable() {
+    public function getInputsDataToTable($class = null) {
 
         if (!$this->hasFields()) {
             return null;
@@ -470,44 +498,42 @@ class KT_Form_Fieldset {
 
         foreach ($this->getFields() as $field) {
             /* @var $field \KT_Field */
-
             $value = $field->getValue();
 
-            if (kt_not_isset_or_empty($value)) {
+            if ($value === "") {
                 continue;
             }
 
-            if (kt_isset_and_not_empty($field->getUnit())) {
+            if (KT::issetAndNotEmpty($field->getUnit())) {
                 $unit = $field->getUnit();
             }
 
-            $fieldContent .= "<tr>";
-            $fieldContent .= "<td>{$field->getLabel()}</td>";
-            $fieldContent .= "<td>$value $unit</td>";
-            $fieldContent .= "<tr>";
+            $fieldContent .= $this->getInputDataToTr($field);
         }
 
-        if (kt_isset_and_not_empty($fieldContent)) {
-            $html = "<table id=\"{$this->getName()}\" class=\"kt-fieldset-data-table\">";
+        if (KT::issetAndNotEmpty($fieldContent)) {
+            $html .= $this->getStartHtmlOfFieldSet(false);
+            $html .= "<table id=\"{$this->getName()}\" class=\"kt-fieldset-data-table $class\">";
             $html .= $fieldContent;
             $html .= "</table>";
+            $html .= $this->getEndHtmlOfFieldSet(false);
 
             return $html;
         }
 
-        return null;
+        return $html;
     }
 
     /**
      * Vrátí true zda fieldset obsahuje nějakou kolekci fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return bol
      */
     public function hasFields() {
-        if (kt_isset_and_not_empty($this->getFields())) {
+        if (KT::issetAndNotEmpty($this->getFields())) {
             return true;
         }
 
@@ -521,7 +547,7 @@ class KT_Form_Fieldset {
      * Lze rozšířit o addType() - NUMBER, EMAIL, DATE
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -540,7 +566,7 @@ class KT_Form_Fieldset {
      * Lze rozšířit o addType() - NUMBER, EMAIL, DATE
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -558,7 +584,7 @@ class KT_Form_Fieldset {
      * Přidá nový field KT_Hidden_Field
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -576,7 +602,7 @@ class KT_Form_Fieldset {
      * Lez rozšířit i o taxonomy - addTaxonomy()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -594,7 +620,7 @@ class KT_Form_Fieldset {
      * Lze rozšířit i o taxonomy - addTaxonomy()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -611,7 +637,7 @@ class KT_Form_Fieldset {
      * Funkce přidá nový typ fieldu KT_Select_Field
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -629,7 +655,7 @@ class KT_Form_Fieldset {
      * Field umožní upload obrázku / souboru v admin screenu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -647,7 +673,7 @@ class KT_Form_Fieldset {
      * Přepínání mezi ANO || NE
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -664,7 +690,7 @@ class KT_Form_Fieldset {
      * Přidá nový typ fieldu - KT_Textarea_Field
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -682,7 +708,7 @@ class KT_Form_Fieldset {
      * Možné použít addParentPage() pro zadání rodiče stránek
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -709,7 +735,7 @@ class KT_Form_Fieldset {
         $categoryManager = new KT_Taxonomy_Data_Manager();
         $categoryManager->setTaxonomy(KT_WP_CATEGORY_KEY);
         $field = $this->fields[$name] = new KT_Select_Field($name, $label);
-        $field->setDataManager($categoryManager);
+        $field->setDataManager($categoryManager)->setPostPrefix($this->getPostPrefix());
         return $field;
     }
 
@@ -718,7 +744,7 @@ class KT_Form_Fieldset {
      * Možné použít výpis pouze určité role setUserRole();
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $name
      * @param string $label
@@ -737,12 +763,12 @@ class KT_Form_Fieldset {
      * Všem fieldům v kolekci nastavení post_prefix dle zadaného do FieldSetu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return \KT_Form_Fieldset
      */
     private function setPostPrefixToAllFields() {
-        if ($this->hasFields() && kt_isset_and_not_empty($this->postPrefix)) {
+        if ($this->hasFields() && KT::issetAndNotEmpty($this->postPrefix)) {
             foreach ($this->fields as $field) {
                 $field->setPostPrefix($this->postPrefix);
             }
@@ -756,12 +782,74 @@ class KT_Form_Fieldset {
      * do class atributu elementu.
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
     private function getClassesString() {
         return $classString = implode(" ", $this->getClasses());
+    }
+
+    /**
+     * Sestaví jeden TR řádek v podobě Label -> value (saved).
+     * Pokud je value prázdné, nebude ho vůbec zobrazovat.
+     * Pokud má Field definovaný Unit zobrazí ho pouze v případě, že se value rovná KT_EMPTY_TEXT (---)
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     * @param KT_Field $field
+     * @return string
+     */
+    private function getInputDataToTr(KT_Field $field, $exclude_keys = array()) {
+
+        if (in_array($field->getName(), $exclude_keys)) {
+            return;
+        }
+
+        if ($field->getFieldType() == KT_Hidden_Field::FIELD_TYPE) {
+            return;
+        }
+
+        $value = $field->getValue();
+
+        if (
+                $field->getFieldType() == KT_Select_Field::FIELD_TYPE ||
+                $field->getFieldType() == KT_Radio_Field::FIELD_TYPE
+        ) {
+            $fieldOption = $field->getDataManager()->getData();
+            if(array_key_exists($field->getValue(), $fieldOption)){
+                $value = $fieldOption[$field->getValue()];
+            }
+        }
+
+        if ($field->getFieldType() == KT_Checkbox_Field::FIELD_TYPE) {
+            $fieldOption = $field->getDataManager()->getData();
+            $fieldData = $field->getValue();
+            if (KT::issetAndNotEmpty($fieldOption) && KT::issetAndNotEmpty($fieldData)) {
+                $value = "";
+                foreach ($fieldOption as $key => $optionText) {
+                    if (in_array($key, $fieldData)) {
+                        $value .= $optionText . ", ";
+                    }
+                }
+            } else {
+                $value = "";
+            }
+        }
+
+        if (KT::notIssetOrEmpty($value)) {
+            return;
+        }
+
+        $unit = $value == KT_EMPTY_SYMBOL ? "" : $field->getUnit();
+
+        $html = "<tr>";
+        $html .= "<td>{$field->getLabel()} </td>";
+        $html .= "<td>$value {$unit}</td>";
+        $html .= "</tr>";
+
+        return $html;
     }
 
 }

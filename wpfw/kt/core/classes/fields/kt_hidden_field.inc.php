@@ -19,7 +19,7 @@ class KT_Hidden_Field extends KT_Field {
      * Provede výpis fieldu pomocí echo $this->getField()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      */
     public function renderField() {
@@ -30,15 +30,17 @@ class KT_Hidden_Field extends KT_Field {
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
     public function getField() {
+        
+        $html = "";
 
         $html .= "<input type=\"hidden\" ";
         $html .= $this->getBasicHtml();
-        $html .= "value=\"{$this->getValue()}\" ";
+        $html .= " value=\"{$this->getValue()}\" ";
         $html .= "/>";
 
         return $html;

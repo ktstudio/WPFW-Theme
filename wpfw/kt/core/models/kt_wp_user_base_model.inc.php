@@ -3,8 +3,8 @@
 /**
  * Základní model pro práci s uživatelem a jeho daty
  *
- * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
- * @link http://www.KTStudio.cz
+ * @author Tomáš Kocifaj
+ * @link http://www.ktstudio.cz
  */
 class KT_WP_User_Base_Model extends KT_Model_Base {
 
@@ -14,8 +14,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Sestavení základního modelu pro práci s uživatelem a jeho daty podle ID
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param integer $userId
      */
@@ -36,7 +36,7 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      * @return array
      */
     public function getWpUserMetas() {
-        if (kt_not_isset_or_empty($this->wpUserMetas)) {
+        if (KT::notIssetOrEmpty($this->wpUserMetas)) {
             $this->wpUserMetasInit();
         }
         return $this->wpUserMetas;
@@ -47,8 +47,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Nastaví modelu objekt WP_Userera
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param WP_User $wpUser
      */
@@ -59,8 +59,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Nastaví modelu sadu usermetas
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param array $wpUserMetas
      */
@@ -73,8 +73,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí ID uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return int
      */
@@ -85,8 +85,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí niceName (přezdívku) uživatele vyplněnou v profilu
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -97,8 +97,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí URL stránky zadanou v profilu uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * return string
      */
@@ -109,8 +109,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Nastaví název, jakým chce být uživatel pojmenován dle nastavení v profili uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * return string;
      */
@@ -121,8 +121,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí email uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -133,8 +133,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí jméno uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -145,8 +145,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí přijímení uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -157,8 +157,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí telefon uživatele - dle rozšíření WP Frameworku
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return type
      */
@@ -169,13 +169,24 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí string složeny s jména a příjmení uživatele
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
     public function getFullName() {
         return $this->getFirstName() . " " . $this->getLastName();
+    }
+    
+    /**
+     * Vrátí URL adresu na detail autora (author.php)
+     * 
+     * @author Tomáš Kocifaj
+     * 
+     * @return string
+     */
+    public function getPermalink(){
+        return get_author_posts_url($this->getId());
     }
 
     /**
@@ -184,8 +195,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      * Pokud není požadavkem dělat rozdíl v post_type nebo post_status, stčí poslat
      * parametry jako null - u jednoho u druhého nebo u obou.
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @global type $wpdb
      * @param string $postType - název post_typu - DEFAULTNĚ : post
@@ -200,19 +211,19 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
 
         $query = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_author = %d";
 
-        if (kt_isset_and_not_empty($postType)) {
+        if (KT::issetAndNotEmpty($postType)) {
             $query .= " AND post_type = %s";
             array_push($preparData, $postType);
         }
 
-        if (kt_isset_and_not_empty($postStatus)) {
+        if (KT::issetAndNotEmpty($postStatus)) {
             $query .= " AND post_status = %s";
             array_push($preparData, $postStatus);
         }
 
         $authorPostCount = $wpdb->get_var($wpdb->prepare($query, $preparData));
 
-        if (kt_isset_and_not_empty($authorPostCount)) {
+        if (KT::issetAndNotEmpty($authorPostCount)) {
             return $authorPostCount;
         }
 
@@ -222,8 +233,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí objekt WP_Query se všemi příspěvky, určitého typu a statusu, které uživatel vytvořil
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param string|array $postType
      * @param string $postStatus
@@ -246,8 +257,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Prověří, zda uživatel může nebo nemůže provádět změny v příslušné capability nebo roleName
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param string $capability
      * @return boolean
@@ -263,8 +274,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Načte data uživatele na základě příspěvku a jeho přiřazeného autora
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param WP_Post $post
      * @return \KT_WP_User_Base_Model
@@ -273,11 +284,11 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     public function wpUserInitByPostAuthor(WP_Post $post) {
         $userId = $post->post_author;
 
-        if (kt_not_isset_or_empty($userId)) {
+        if (KT::notIssetOrEmpty($userId)) {
             throw new KT_Not_Supported_Exception("Post has no post_author");
         }
 
-        if (kt_isset_and_not_empty($userId)) {
+        if (KT::issetAndNotEmpty($userId)) {
             $this->wpUserInitById($userId);
         }
 
@@ -287,21 +298,25 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Vrátí jednu hodnotu z wp_usermetas na základě zadaného klíče
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param string $metaKey
      * @return string
      */
     public function getMetaValueByKey($metaKey) {
         $userMetas = $this->getWpUserMetas();
-        return $userMetas[$metaKey];
+        if(array_key_exists($metaKey, $userMetas)){
+            return $userMetas[$metaKey];
+        }
+        
+        return "";
     }
 
     /**
      * Vrátí všechny user metas k danému uživateli - v případě volby prefixu probíhá LIKE dotaz
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
+     * @author Tomáš Kocifaj
      * @url www.ktstudio.cz
      *
      * @global WP_DB $wpdb
@@ -314,13 +329,13 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
 
         $query = "SELECT meta_key, meta_value FROM {$wpdb->usermeta} WHERE user_id = %d";
 
-        if (kt_isset_and_not_empty($prefix)) {
+        if (KT::issetAndNotEmpty($prefix)) {
             $query .= " AND meta_key LIKE '$prefix%'";
         }
 
         $results = $wpdb->get_results($wpdb->prepare($query, $userId), ARRAY_A);
 
-        if (kt_isset_and_not_empty($results)) {
+        if (KT::issetAndNotEmpty($results)) {
             foreach ($results as $result) {
                 $clearResult[$result["meta_key"]] = $result["meta_value"];
             }
@@ -336,8 +351,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Provede inicializaci uživatele a jeho dat.
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param int $userId
      * @return \KT_WP_User_Base_Model
@@ -345,17 +360,17 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      */
     private function wpUserInitById($userId) {
 
-        if (kt_not_isset_or_empty($userId)) {
+        if (KT::notIssetOrEmpty($userId)) {
             return null;
         }
 
-        if (!kt_is_id_format($userId)) {
+        if (!KT::isIdFormat($userId)) {
             return null;
         }
 
-        $userId = kt_try_get_int($userId);
+        $userId = KT::tryGetInt($userId);
 
-        if (kt_isset_and_not_empty($userId)) {
+        if (KT::issetAndNotEmpty($userId)) {
             $wpUser = get_user_by("id", $userId);
 
             if ($wpUser) {
@@ -371,8 +386,8 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     /**
      * Provede inicializaci všech uživatelo usermetas a nastaví je do objektu
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      */
     private function wpUserMetasInit() {
         $userId = $this->getWpUser()->ID;

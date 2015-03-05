@@ -4,14 +4,15 @@ class KT_Repository {
 
     const DEFAULT_LIMIT = 30;
     const DEFAULT_RELATION = 'AND';
+    const ORDER_ASC = "ASC";
+    const ORDER_DESC = "DESC";
 
     private $currentItem = null;
     private $iterator = 0;
     private $items = array();
     private $table = null;
     private $relation = self::DEFAULT_RELATION;
-    private $orderby = null;
-    private $order = "ASC";
+    private $orders = array();
     private $limit = null;
     private $offset = null;
     private $queryParams = array();
@@ -25,8 +26,8 @@ class KT_Repository {
      * pro iterování kolekce lze požit $object->haveItems() $object->theItem()
      * lze použít pouze v loopět while()
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param string $className // který objekt bude repositář iterovat - Název classy
      * @param string $table // Z které tabulky bude repositář selectovat data
@@ -52,8 +53,8 @@ class KT_Repository {
     /**
      * Vrátí aktuální objekt, na kterém se nachází vnitřní iterátor pomoc haveItems() a theItems()
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return object - dle definice className
      */
@@ -64,8 +65,8 @@ class KT_Repository {
     /**
      * Vrátí aktuální hodnotu iterátoru (indexu), na kterém se iterace objektu nachází
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return int
      */
@@ -76,8 +77,8 @@ class KT_Repository {
     /**
      * Vrátí kolekci všech objektů, které byly dle SQL dotazu načteny
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return array
      */
@@ -88,8 +89,8 @@ class KT_Repository {
     /**
      * Vrátí název tabulky, nad kterou budou probíhat základní dotazy na selekci dat
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
@@ -100,8 +101,8 @@ class KT_Repository {
     /**
      * Vrátí základní relaci mezi WHERE parametry
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
@@ -110,34 +111,42 @@ class KT_Repository {
     }
 
     /**
-     * Vrátí název sloupce, podle kterého se bude výsledek dotazu v repositáři řadit
+     * Vrátí výčet zadaných řazení (podle hodnot a případně i směrů)
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
      * 
-     * @return string
+     * @return array
      */
-    protected function getOrderby() {
-        return $this->orderby;
+    protected function getOrders() {
+        return $this->orders;
     }
 
     /**
-     * Vrátí, zda se má dotaz řadit ASC nebo DESC
+     * Vrátí obsah ORDER BY příkazu na základě zadaných řazení
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
      * 
-     * @return type
+     * @return string
      */
-    protected function getOrder() {
-        return $this->order;
+    protected function getOrderBy() {
+        $orders = array();
+        foreach ($this->orders as $orderby => $direction) {
+            if (KT::issetAndNotEmpty($direction)) {
+                array_push($orders, "$orderby $direction");
+            } else {
+                array_push($orders, "$orderby");
+            }
+        }
+        return implode(",", $orders);
     }
 
     /**
      * Vrátí LIMIT pro SQL dotaz
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return int
      */
@@ -148,8 +157,8 @@ class KT_Repository {
     /**
      * Vrátí OFFSET pro SQL dotaz - LIMIT 10,10 (offset)
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return int
      */
@@ -160,8 +169,8 @@ class KT_Repository {
     /**
      * Vrátí kolekci všech WHERE parametrů, které byly objektu definovány pro select dotaz
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return array
      */
@@ -172,8 +181,8 @@ class KT_Repository {
     /**
      * Vrátí kolekci všech chyb, které byly při používání objektu zavedeny
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return type
      */
@@ -193,8 +202,8 @@ class KT_Repository {
     /**
      * Vrátí název objektu, který má být iterován
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
@@ -205,8 +214,8 @@ class KT_Repository {
     /**
      * Vrátí celkový počet všechn potenciálních výsledku bez ohledu na nastavení LIMIT nebo offset
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return int
      */
@@ -219,8 +228,8 @@ class KT_Repository {
     /**
      * Nastaví, na jakém itemu se aktuální iterovaný kolekce nachází
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param int $currentItem
      * @return \KT_Repository
@@ -234,15 +243,15 @@ class KT_Repository {
     /**
      * Nastaví aktuální pozici iterátoru
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param int $iterator
      * @return \KT_Repository
      */
     private function setIterator($iterator) {
-        if (kt_is_id_format($iterator)) {
-            $iterator = kt_try_get_int($iterator);
+        if (KT::isIdFormat($iterator)) {
+            $iterator = KT::tryGetInt($iterator);
             $this->iterator = $iterator;
         }
 
@@ -252,8 +261,8 @@ class KT_Repository {
     /**
      * Nastaví kolekci itemů
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param array $items
      * @return \KT_Repository
@@ -266,8 +275,8 @@ class KT_Repository {
     /**
      * Nastaví název tabulky, odkud bude repositář stahovat data
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $table
      * @return \KT_Repository
@@ -281,7 +290,7 @@ class KT_Repository {
      * Nastaví relační podmínku pro Where dotazy - default 'AND'
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $relation
      * @return \KT_Repository
@@ -295,51 +304,36 @@ class KT_Repository {
     }
 
     /**
-     * Nastaví, podle kterého sloupce má být kolekce itemů seřazena při dotazu repositáře
+     * Nastavení řazení podle hodnoty případně vč. směru nebo i bez
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
      * 
-     * @param type $orderby
-     * @return \KT_Repository
-     */
-    public function setOrderby($orderby) {
-        $this->orderby = $orderby;
-        return $this;
-    }
-
-    /**
-     * Nastavení řazení order hodnoty pro dotaz repositáře
-     *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
-     *
-     * @param string $order // ASCE | DESC
+     * @param string $orderBy
+     * @param string $direction ASC | DESC
      * @return \KT_Repository
      * @throws KT_Not_Supported_Exception
+     * @throws KT_Null_Reference_Exception
      */
-    public function setOrder($order = "DESC") {
-        if ($order == "ASC" || $order == "DESC") {
-            $this->order = $order;
-            return $this;
-        }
-
-        throw new KT_Not_Supported_Exception("Order have to by string - ASC or DESC");
+    public function setOrder($orderBy, $direction = NULL) {
+        $this->orders = array();
+        $this->addOrder($orderBy, $direction);
+        return $this;
     }
 
     /**
      * Nastavení LIMIT a pro dotaz repositáře
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param int $limit
      * @return \KT_Repository
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setLimit($limit) {
-        if (kt_is_id_format($limit)) {
-            $limit = kt_try_get_int($limit);
+        if (KT::isIdFormat($limit)) {
+            $limit = KT::tryGetInt($limit);
             $this->limit = $limit;
         }
 
@@ -349,8 +343,8 @@ class KT_Repository {
     /**
      * Nastaví offset dotazu (LIMIT)
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param int $offset
      * @return \KT_Repository
@@ -363,8 +357,8 @@ class KT_Repository {
     /**
      * Nastaví kolekce všechn where paramtrů, které byly v rámci repositáře vydefinovány
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param array $queryParams
      * @return \KT_Repository
@@ -377,8 +371,8 @@ class KT_Repository {
     /**
      * Nastaví kolekci všech chyb, které byly v rámci použití objekty zjištěny
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param array $error
      * @return \KT_Repository
@@ -391,8 +385,8 @@ class KT_Repository {
     /**
      * Nastavení query pro selekci dat MySQL
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $query
      * @return \KT_Repository
@@ -405,8 +399,8 @@ class KT_Repository {
     /**
      * Nastaví název objektu, který bude vracen spolu s daty při iteraci repositáře
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $className
      * @return \KT_Repository
@@ -419,15 +413,15 @@ class KT_Repository {
     /**
      * Nastaví, kolik celkových výsledků bylo při nastavené dotazu zjištěno.
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param int $countItems
      * @return \KT_Repository
      */
     protected function setCountItems($countItems) {
-        if (kt_is_id_format($countItems)) {
-            $countItems = kt_try_get_int($countItems);
+        if (KT::isIdFormat($countItems)) {
+            $countItems = KT::tryGetInt($countItems);
             $this->countItems = $countItems;
         }
 
@@ -439,8 +433,8 @@ class KT_Repository {
     /**
      * Nastaví ručně tvořenou query se sadou dat pro prepare statment
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @global wpdb $wpdb
      * @param string $query
@@ -452,7 +446,7 @@ class KT_Repository {
 
         $prepareQuery = $wpdb->prepare($query, $prepareStatmentData);
 
-        if (kt_isset_and_not_empty($prepareQuery)) {
+        if (KT::issetAndNotEmpty($prepareQuery)) {
             $this->setQuery($prepareQuery);
             return $this;
         }
@@ -464,7 +458,7 @@ class KT_Repository {
      * Přidá jeden parametr do Where selectu dat
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param string $column
      * @param mixed $value
@@ -490,7 +484,7 @@ class KT_Repository {
      * Přidá WHERE parametr, kde se dotazuje na to, zda v daném sloupci je nastasven NULL
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param type $column
      * @return \KT_Repository
@@ -513,7 +507,7 @@ class KT_Repository {
      * Přidá WHERE parametr, kde se dotazuje na to, zda ve sloupci je nějaká hodnota - tedy není NULL
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param type $column
      * @return \KT_Repository
@@ -533,10 +527,39 @@ class KT_Repository {
     }
 
     /**
+     * Přidá řazení podle hodnoty případně vč. směru nebo i bez
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $orderBy
+     * @param string $direction ASC | DESC
+     * @return \KT_Repository
+     * @throws KT_Not_Supported_Exception
+     * @throws KT_Null_Reference_Exception
+     */
+    public function addOrder($orderBy, $direction = null) {
+        if (KT::issetAndNotEmpty($orderBy)) {
+            if (KT::issetAndNotEmpty($direction)) {
+                if ($direction == self::ORDER_ASC || $direction == self::ORDER_DESC) {
+                    $this->orders[$orderBy] = $direction;
+                    return $this;
+                } else {
+                    throw new KT_Not_Supported_Exception("Order direction: \"$order\" != ASC | DESC");
+                }
+            } else {
+                $this->orders[$orderBy] = null;
+                return $this;
+            }
+        }
+        throw new KT_Null_Reference_Exception("orderBy");
+    }
+
+    /**
      * Naplní kolekci items příslušnými ID záznamů v DB
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @global wpdb $wpdb // globální proměnná pro práci s DB v rámci WP
      * @return \KT_Repository
@@ -544,7 +567,7 @@ class KT_Repository {
     public function selectData() {
         global $wpdb;
 
-        if (kt_not_isset_or_empty($this->getQuery())) {
+        if (KT::notIssetOrEmpty($this->getQuery())) {
             $this->createQuery();
         }
 
@@ -552,7 +575,7 @@ class KT_Repository {
         $countItems = $this->getCoutOfAllItemsInDb();
         $this->setCountItems($countItems);
 
-        $result = $wpdb->get_results($query, ARRAY_A);
+        $result = $wpdb->get_col($query);
 
         if ($result === false) {
             $this->addError('Při selekci dat se vyskytla chyba', $wpdb->last_error);
@@ -561,8 +584,7 @@ class KT_Repository {
         if (count($result) > 0) {
             foreach ($result as $value) {
                 /* @var $item \KT_Crud */
-                $item = new $this->className();
-                $item->setData($value);
+                $item = new $this->className($value);
                 $itemsColection[] = $item;
             }
 
@@ -576,7 +598,7 @@ class KT_Repository {
      * Vrací TRUE když v procházení kolekce má ještě další item k iteraci
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return boolean
      */
@@ -593,8 +615,8 @@ class KT_Repository {
     /**
      * V procházení kolekce nastaví aktuální $item
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return object dle zadaného parametru v constructoru
      */
@@ -612,14 +634,14 @@ class KT_Repository {
     /**
      * Připráví základní string s query na základě specifikovaných where podmínek
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return array
      */
     private function createConditionsQuery() {
 
-        if (kt_not_isset_or_empty($this->getQueryParams())) {
+        if (KT::notIssetOrEmpty($this->getQueryParams())) {
             return "";
         }
 
@@ -632,7 +654,7 @@ class KT_Repository {
 
         foreach ($this->getQueryParams() as $key => $value) {
 
-            if (kt_isset_and_not_empty($value['condition'])) {
+            if (KT::issetAndNotEmpty($value['condition'])) {
                 $query .= "{$value['column']} {$value['condition']} {$this->getValueTypeForDbQuery($value['value'])}";
                 array_push($preparedData, $value['value']);
             }
@@ -648,8 +670,8 @@ class KT_Repository {
     /**
      * Na základě parametrů zadané v objektu sestaví celé Query pro DB
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param string $selectWhat
      */
@@ -660,21 +682,24 @@ class KT_Repository {
         $preparData = array();
         $offset = "";
 
-        $query = "SELECT * FROM {$this->getTable()}";
+        $className = $this->getClassName();
+        $crudClass = new $className();
+
+        $query = "SELECT " . $crudClass->getPrimaryKeyColumn() . " FROM {$this->getTable()}";
 
         $conditionData = $this->createConditionsQuery();
 
-        if (kt_isset_and_not_empty($conditionData)) {
+        if (KT::issetAndNotEmpty($conditionData)) {
             $query .= $conditionData["query"];
             $preparData = array_merge($preparData, $conditionData["prepareData"]);
         }
 
-        if (kt_isset_and_not_empty($this->getOrderby())) {
-            $query .= " ORDER BY {$this->getOrderby()} {$this->getOrder()}";
+        if (KT::issetAndNotEmpty($this->getOrderBy())) {
+            $query .= " ORDER BY {$this->getOrderBy()}";
         }
 
-        if (kt_isset_and_not_empty($this->getLimit())) {
-            if (kt_isset_and_not_empty($this->getOffset())) {
+        if (KT::issetAndNotEmpty($this->getLimit())) {
+            if (KT::issetAndNotEmpty($this->getOffset())) {
                 $offset = "%d ,";
                 array_push($preparData, $this->getOffset());
             }
@@ -682,8 +707,12 @@ class KT_Repository {
             array_push($preparData, $this->getLimit());
         }
 
-        $this->setQuery($wpdb->prepare($query, $preparData));
+        if (KT::issetAndNotEmpty($preparData)) {
+            $this->setQuery($wpdb->prepare($query, $preparData));
+            return $this;
+        }
 
+        $this->setQuery($query);
         return $this;
     }
 
@@ -691,8 +720,8 @@ class KT_Repository {
      * Zjistí počet všech záznam, které odpovídají zadanému selectu
      * Používá se pro stránkování
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @global wpdb $wpdb
      * @return type
@@ -700,7 +729,7 @@ class KT_Repository {
     private function getCoutOfAllItemsInDb() {
         global $wpdb;
 
-        if (kt_not_isset_or_empty($this->getQuery())) {
+        if (KT::notIssetOrEmpty($this->getQuery())) {
             $this->createQuery('COUNT(*)');
         }
 
@@ -716,8 +745,8 @@ class KT_Repository {
     /**
      * Přidá objektu Error
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @param type $message
      * @param type $content
@@ -729,8 +758,8 @@ class KT_Repository {
     /**
      * Vrátí hash znak pro preparStatments za účelem vytvoření query pro $wpdb
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz 
      * 
      * @param str|int|float $value
      * @return string

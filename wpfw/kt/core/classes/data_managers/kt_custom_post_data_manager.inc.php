@@ -17,7 +17,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      */
     public function getData() {
 
-        if (kt_not_isset_or_empty(parent::getData())) {
+        if (KT::notIssetOrEmpty(parent::getData())) {
             $this->dataInit();
         }
 
@@ -72,7 +72,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Definice WP_Query $args pro příslušných post_typů, které budou součástí kolekce dat
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param array $queryArgs
      * @return \KT_Post_Type_Select_Field
@@ -87,7 +87,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * V popisu u jednotlivých položek dat může být nastavený textový prefix na základě meta_key
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param string $prefixMetaKey
      * @return \KT_Post_Type_Select_Field
@@ -102,7 +102,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * V popisu u jednotlivých položek dat může být nastavený textový suffix na základě meta_key
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param string $suffixMetaKey
      * @return \KT_Post_Type_Select_Field
@@ -117,7 +117,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Nastaví vyčtenou hodnotu z postMetas pro další použití
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param string $prefixMetaValue
      */
@@ -129,7 +129,7 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Nastaví vyčtenou hodnotu z postMetas pro další použití
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param string $suffixMetaValue
      */
@@ -144,25 +144,25 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Selekt probíhá pomocí get_posts @link http://codex.wordpress.org/Function_Reference/get_posts
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @return \KT_Post_Type_Select_Field
      */
     public function dataInit() {
 
-        if (kt_not_isset_or_empty($this->getQueryArgs())) {
+        if (KT::notIssetOrEmpty($this->getQueryArgs())) {
             return;
         }
 
         $postCollection = get_posts($this->getQueryArgs());
 
-        if (kt_isset_and_not_empty($postCollection)) {
+        if (KT::issetAndNotEmpty($postCollection)) {
             foreach ($postCollection as $postItem) {
                 $options[$postItem->ID] = $this->getPrefixValue($postItem->ID) . " " . $postItem->post_title . " " . $this->getSuffixValue($postItem->ID);
             }
         }
 
-        if (kt_isset_and_not_empty($options)) {
+        if (KT::issetAndNotEmpty($options)) {
             $this->setData($options);
         }
 
@@ -175,14 +175,14 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Vrátí hodnotu meta_value na základě nastaveného meta klíče
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @param int $postId
      * @return string
      */
     private function getPrefixValue($postId) {
-        if (kt_isset_and_not_empty($this->getPrefixMetaKey())) {
-            if (kt_isset_and_not_empty($this->getPrefixMetaValue())) {
+        if (KT::issetAndNotEmpty($this->getPrefixMetaKey())) {
+            if (KT::issetAndNotEmpty($this->getPrefixMetaValue())) {
                 return $this->getPrefixMetaValue();
             }
 
@@ -199,14 +199,14 @@ class KT_Custom_Post_Data_Manager extends KT_Data_Manager_Base {
      * Vrátí hodnotu meta_value na základě nastaveného meta klíče
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @param int $postId
      * @return string
      */
     private function getSuffixValue($postId) {
-        if (kt_isset_and_not_empty($this->getSuffixMetaKey())) {
-            if (kt_isset_and_not_empty($this->getSuffixMetaValue())) {
+        if (KT::issetAndNotEmpty($this->getSuffixMetaKey())) {
+            if (KT::issetAndNotEmpty($this->getSuffixMetaValue())) {
                 return $this->getSuffixMetaValue();
             }
 

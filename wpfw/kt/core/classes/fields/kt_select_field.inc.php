@@ -51,7 +51,7 @@ class KT_Select_Field extends KT_Options_Field_Base {
      * Provede výpis fieldu pomocí echo $this->getField()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      */
     public function renderField() {
@@ -62,7 +62,7 @@ class KT_Select_Field extends KT_Options_Field_Base {
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -89,23 +89,22 @@ class KT_Select_Field extends KT_Options_Field_Base {
      * Připraví html content s <option> pro výběr selectu
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @return string
      */
     public function getOptionContent() {
-
         $html = "";
         $selected = "";
-
-        $emptyOption = "<option value=\"\">" . KT_EMPTY_TEXT . "</option>";
+       
+        $emptyOption = "<option value=\"\">" . KT_EMPTY_SYMBOL . "</option>";
 
         if ($this->getFirstEmpty() == true) {
             $html .= $emptyOption;
         }
-
-        foreach ($this->getOptionsData() as $key => $val) {
-            if ($key == $this->getValue()) {
+        
+       foreach ($this->getOptionsData() as $key => $val) {
+            if ($key == $this->getValue() && $this->getValue() !== null && $this->getValue() !== '') {
                 $selected = "selected=\"selected\"";
             }
 

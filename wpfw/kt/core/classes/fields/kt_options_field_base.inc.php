@@ -39,7 +39,7 @@ abstract class KT_Options_Field_Base extends KT_Field {
      * @return array
      */
     protected function getOptionsData() {
-        if (kt_isset_and_not_empty($this->dataManager)) {
+        if (KT::issetAndNotEmpty($this->dataManager)) {
             return $this->getDataManager()->getData();
         }
 
@@ -59,7 +59,7 @@ abstract class KT_Options_Field_Base extends KT_Field {
     /**
      * Vrátí pole po select, nebo radio které obsahuje (3) možnosti výběru: (prázdnou), ano, ne
      * 
-     * @author Martin Hlaváč <hlavac@ktstudio.cz>
+     * @author Martin Hlaváč
      * @link http://www.ktstudio.cz
      * 
      * @param boolean $withFirtEmpty
@@ -67,7 +67,7 @@ abstract class KT_Options_Field_Base extends KT_Field {
      */
     public static function getSwitchOptions($withFirtEmpty = true) {
         if ($withFirtEmpty === true) {
-            $options[KT_EMPTY_TEXT] = KT_EMPTY_TEXT;
+            $options[KT_EMPTY_SYMBOL] = KT_EMPTY_SYMBOL;
         }
         $options[KT_Switch_Field::YES] = __("Ano", KT_DOMAIN);
         $options[KT_Switch_Field::NO] = __("Ne", KT_DOMAIN);

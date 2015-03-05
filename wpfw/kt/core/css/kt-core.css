@@ -17,17 +17,63 @@ img.kt-loading-image
     color: #fff;
     text-transform: uppercase;
     padding: 10px 20px;
-    display: inline-block;
     font-size: 15px;
+}
+
+.kt-custom-screen-page table.wp-list-table
+{
+    margin-top: 15px;
+}
+
+.kt-custom-screen-page table.wp-list-table tr.updated
+{
+    background-color: #DAFF75;
+}
+
+.kt-custom-screen-page table.wp-list-table tr td
+{
+    vertical-align: middle;
+}
+
+.kt-custom-screen-page #addCrudButtonList
+{
+    margin-top: 15px;
 }
 
 .kt-loading-gif
 {
+    position: relative;
+}
+
+.kt-loading-gif:before
+{
+    content: "";
+    display: block;
     width: 16px;
     height: 16px;
     display: inline-block;
     background: url('../images/loading.gif') top left no-repeat;
+    display: none;
+    position: absolute;
 }
+
+.kt-loading-gif.left:before
+{
+    left: -20px;
+    top: 0;
+}
+
+.kt-loading-gif.right:before
+{
+    right: -20px;
+    top: 0;
+}
+
+.kt-loading-gif.loading:before
+{
+    display: block;
+}
+
 
 /** LOGIN KT LOGO */
 
@@ -52,6 +98,22 @@ table.wp-list-table tbody tr td.column-image a img
     height: 100px !important;
 }
 
+table.wp-list-table tbody tr td span.row-actions
+{   
+    display: block;
+}
+
+table.wp-list-table tbody tr td span.row-actions span.delete-row
+{
+    color: #ffc4c4;
+    cursor: pointer;
+}
+
+table.wp-list-table tbody tr td span.row-actions span.delete-row:hover
+{
+    color: #FF0000;
+}
+
 table.wp-list-table tbody tr.status-pending
 {
     background: #FFBFBF;
@@ -65,6 +127,18 @@ table.wp-list-table tbody tr.status-publish
 table.kt-rez-table thead tr th#title
 {
     padding-left: 10px;
+}
+
+table.item-list td.sortable
+{
+    width: 20px;
+    cursor: move;
+}
+
+table.item-list tr.ui-sortable-helper
+{
+   border: 1px dashed #c7c7c7;
+   background: rgba(199, 199, 199, 0.7);
 }
 
 /**** FORM BASIC STYLES ****/
@@ -106,11 +180,6 @@ table.kt-form-table tr td textarea
     min-height: 150px;
 }
 
-div.postbox label
-{
-    display: block;
-}
-
 div.postbox input#kt-form-submit
 {
     margin: 20px 0 10px 0;
@@ -118,7 +187,6 @@ div.postbox input#kt-form-submit
 
 div.validator
 {
-    float: left;
     height: 0;
     position: relative;
 }
@@ -126,10 +194,10 @@ div.validator
 span.erorr-s
 {
     position: absolute;
-    background: red;
     padding: 2px 8px;
     display: block;
-    left: 10px;
+    left: 0px;
+    top: 25px;
     white-space: nowrap;
     height: 20px;
     line-height: 20px;
@@ -139,6 +207,20 @@ span.erorr-s
     letter-spacing: -1px;
     font-size: 11px;
     background: #c92a2a;
+}
+
+span.erorr-s:after
+{
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: -5px;
+    left: 10px;
+    border-style: solid;
+    border-width: 0 5px 10px 5px;
+    border-color: transparent transparent #c92a2a transparent;
 }
 
 .kt_fieldset input[type="number"],

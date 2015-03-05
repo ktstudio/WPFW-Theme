@@ -17,13 +17,14 @@ class KT_Media_Field extends KT_Field {
      */
     public function __construct($name, $label) {
         parent::__construct($name, $label);
+        $this->addAttrClass("kt-file-loader button");
     }
 
     /**
      * Provede výpis fieldu pomocí echo $this->getField()
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      */
     public function renderField() {
         echo $this->getField();
@@ -32,8 +33,8 @@ class KT_Media_Field extends KT_Field {
     /**
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -41,11 +42,11 @@ class KT_Media_Field extends KT_Field {
 
         $html = "";
 
-        $classes = $this->getClassAttributeContent();
+        $classes = $this->getAttrClassString();
 
         $html .= "<div class=\"file-load-box\">";
 
-        if (kt_isset_and_not_empty($this->getValue())) {
+        if (KT::issetAndNotEmpty($this->getValue())) {
             $html .= $this->getFullSpanUrl();
         } else {
             $html .= $this->getEmptySpanUrl();
@@ -53,10 +54,10 @@ class KT_Media_Field extends KT_Field {
 
         $html .= "<input type=\"hidden\" ";
         $html .= $this->getBasicHtml();
-        $html .= "value=\"{$this->getValue()}\" ";
+        $html .= " value=\"{$this->getValue()}\" ";
         $html .= "/>";
 
-        $html .= "<span class=\"kt-file-loader button $classes\" id=\"{$this->getId()}\">" . __('Vybrat soubor', KT_DOMAIN) . "</span>";
+        $html .= "<span $classes id=\"{$this->getAttrValueByName("id")}\">" . __('Vybrat soubor', KT_DOMAIN) . "</span>";
 
         if ($this->hasErrorMsg()) {
             $html .= parent::getHtmlErrorMsg();
@@ -74,21 +75,21 @@ class KT_Media_Field extends KT_Field {
     /**
      * Vrátí prázdný content pro field bez nastaveného attachmentu
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
     private function getEmptySpanUrl() {
-        return $html = "<span class=\"{$this->getId()} span-url\"></span>";
+        return $html = "<span class=\"{$this->getAttrValueByName("id")} span-url\"></span>";
     }
 
     /**
      * Vrátí obsah s daty pro field v případě, že je attachment nastaven
      * V případě obrázku vrátí jeho thumbnail v případě souboru pouze název
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
@@ -102,11 +103,11 @@ class KT_Media_Field extends KT_Field {
             $fileTag = "<img class=\"file\" src=\"{$imageData[0]}\">";
         }
 
-        if (kt_not_isset_or_empty($fileTag)) {
+        if (KT::notIssetOrEmpty($fileTag)) {
             $fileTag = "<span class=\"file\">{$attachment->post_title}</span>";
         }
 
-        return $html = "<span class=\"{$this->getId()} span-url full\">$fileTag $removeFileTag</span>";
+        return $html = "<span class=\"{$this->getAttrValueByName("id")} span-url full\">$fileTag $removeFileTag</span>";
     }
 
     // --- statické funkce ------------
@@ -114,8 +115,8 @@ class KT_Media_Field extends KT_Field {
     /**
      * Funkce provede kontrolu, zda předaný attachment je typu obrázek
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param WP_Post $attachment
      * @return boolean

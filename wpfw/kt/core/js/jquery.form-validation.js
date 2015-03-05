@@ -4,7 +4,7 @@
      * jQuery plugin pro validaci KT_Form na straně browseru
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @returns {Boolean}
      */
@@ -48,8 +48,8 @@
                 return value % 1 === 0;
             },
             float: function ( value, param ) {
-                var regexFloatPattern = /^\d{0,8}(\.\d{1,2})?$/;
-                return regexFloatPattern.test( value );
+                 var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+                return (RE.test(value));
             },
             email: function ( value, param ) {
                 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -60,8 +60,10 @@
                 return regexp.test( value );
             },
             range: function ( value, param ) {
+                
+                console.log(!methods.float( value ));
 
-                if ( !methods.float( value, param ) ) {
+                if ( !methods.float( value ) ) {
                     return false;
                 }
 
@@ -121,6 +123,10 @@
                 }
 
                 return false;
+            },
+            regular: function(value, param){
+                var patt = new RegExp(param);
+                return patt.test(value);
             },
             // funkce vrátím HTML s chybovou hláškou na základě předané MSG
             errorMsgContent: function ( msg ) {

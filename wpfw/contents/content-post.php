@@ -5,10 +5,6 @@
         <div class="col-lg-8 col-md-8">
             <div class="entryContent">
                 <h1 id="postTitle"><?php echo $singlePresenter->getModel()->getTitle(); ?></h1>
-                <div id="mainPhoto" class="gallery">
-                    <?php echo $singlePresenter->getThumbnailWithSelfLink(); ?>
-                </div>
-                <?php echo $singlePresenter->getGallery(); ?>
                 <div class="entryContent">
                     <p>
                         <span><?php echo $singlePresenter->getModel()->getPublishDate(); ?> | <?php echo $singlePresenter->getModel()->getAuthor()->getDisplayName(); ?></span>

@@ -2,7 +2,6 @@
 
 class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
 
-    private $userRole = null;
     private $allUserRoles = array();
     private $userMetaQuery = array();
 
@@ -15,19 +14,15 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      */
     public function getData() {
 
-        if (kt_not_isset_or_empty(parent::getData())) {
+        if (KT::notIssetOrEmpty(parent::getData())) {
             $this->dataInit();
         }
 
         return parent::getData();
     }
 
-    private function getUserRole() {
-        return $this->userRole;
-    }
-
     private function getAllUserRoles() {
-        if (kt_not_isset_or_empty($this->allUserRoles)) {
+        if (KT::notIssetOrEmpty($this->allUserRoles)) {
             $this->allUserRolesInit();
         }
 
@@ -40,32 +35,18 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
 
     // --- settery --------------
 
-    /**
-     * Nastaví fieldu, zda chcete vybrat uživatele pouze s příslušnou rolí a ostatní bude ignorovat
-     * 
-     * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
-     * 
-     * @param type $userRole
-     * @return \KT_WP_User_Field
-     */
-    public function setUserRole($userRole) {
-        $this->userRole = $userRole;
-
-        return $this;
-    }
 
     /**
      * Proměnná obsahuje všechny dostupné use roles v rámci Wordpressu
      * Řidící se interně třídou
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param array $allUserRoles
      * @return \KT_WP_User_Field
      */
-    private function setAllUserRoles(array $allUserRoles) {
+    public function setAllUserRoles(array $allUserRoles) {
         $this->allUserRoles = $allUserRoles;
 
         return $this;
@@ -76,13 +57,13 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      * WP_User_Query @link http://codex.wordpress.org/Class_Reference/WP_User_Query
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @param array $userMetaQuery
      * @return \KT_WP_User_Field
      */
     public function setUserMetaQuery(array $userMetaQuery) {
-        if (kt_isset_and_not_empty($userMetaQuery)) {
+        if (KT::issetAndNotEmpty($userMetaQuery)) {
             $this->userMetaQuery = $userMetaQuery;
         }
 
@@ -91,18 +72,19 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
 
     // --- privátní funkce --------
 
+    /**
+     * Načte všechny uživatele na základě vybraných rolí
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz 
+     * 
+     * 
+     * @return \KT_WP_User_Data_Manager
+     */
     private function dataInit() {
-
         $userData = array();
-
-        if (kt_isset_and_not_empty($this->getUserRole())) {
-            $userData = $this->getDataOfUserRole($this->getUserRole());
-        } else {
-            $userData = $this->getAllUsersData();
-        }
-
+        $userData = $this->getAllUsersData();
         $this->setData($userData);
-
         return $this;
     }
 
@@ -110,7 +92,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      * Vrátí kolekci všech uživatelů včetně
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @return string
      */
@@ -118,10 +100,10 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
 
         $data = array();
 
-        if (kt_isset_and_not_empty($this->getAllUserRoles())) {
+        if (KT::issetAndNotEmpty($this->getAllUserRoles())) {
             foreach ($this->getAllUserRoles() as $roleSlug => $roleName) {
                 $newUsersData = $this->getDataOfUserRole($roleSlug);
-                $data = array_merge($data, $newUsersData);
+                $data += $newUsersData;
             }
         }
 
@@ -132,7 +114,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      * Vráti data v rámci jedné uživatelské role
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz  
+     * @link http://www.ktstudio.cz  
      * 
      * @param type $userRoleName
      * @return string
@@ -143,7 +125,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
 
         $usersByRole = $this->getUsersByRole($userRoleName);
 
-        if (kt_isset_and_not_empty($usersByRole)) {
+        if (KT::issetAndNotEmpty($usersByRole)) {
             foreach ($usersByRole as $user) {
                 $data[$user->ID] = $user->display_name . " [$user->user_login]";
             }
@@ -161,7 +143,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      * Pokud požadovaná role není v rámci Wordpress registrovná, vrátí automaticky prázdné pole
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz  
+     * @link http://www.ktstudio.cz  
      * 
      * @param string $role
      * @return string
@@ -177,7 +159,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
         );
         $userMetaQuery = $this->getUserMetaQuery();
 
-        if (kt_isset_and_not_empty($userMetaQuery) && is_array($userMetaQuery) && count($userMetaQuery) > 0) {
+        if (KT::issetAndNotEmpty($userMetaQuery) && is_array($userMetaQuery) && count($userMetaQuery) > 0) {
             $userQueryParams["meta_query"] = $userMetaQuery;
         }
 
@@ -190,7 +172,7 @@ class KT_WP_User_Data_Manager extends KT_Data_Manager_Base {
      * Provede inicilizaci všech registrovaných uživatelských rolí založené ve Wordpress
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz 
+     * @link http://www.ktstudio.cz 
      * 
      * @return \KT_WP_User_Field
      */

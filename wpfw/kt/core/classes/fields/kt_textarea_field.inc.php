@@ -1,6 +1,6 @@
 <?php
 
-class KT_Textarea_Field extends KT_Field {
+class KT_Textarea_Field extends KT_Placeholder_Field_base {
 
     const FIELD_TYPE = "textarea";
 
@@ -23,13 +23,13 @@ class KT_Textarea_Field extends KT_Field {
      * Nastaví textarea počet řádků tag rows=""
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param int $rows
      * @return \KT_Textarea_Field
      */
     public function setRows($rows) {
-        if (kt_isset_and_not_empty($rows)) {
+        if (KT::issetAndNotEmpty($rows)) {
             $this->addAttribute("rows", $rows);
         }
 
@@ -40,13 +40,13 @@ class KT_Textarea_Field extends KT_Field {
      * Nastaví textarea počet sloupců attr cols=""
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param int $cols
      * @return \KT_Textarea_Field
      */
     public function setCols($cols) {
-        if (kt_isset_and_not_empty($cols)) {
+        if (KT::issetAndNotEmpty($cols)) {
             $this->addAttribute("cols", $cols);
         }
 
@@ -54,34 +54,24 @@ class KT_Textarea_Field extends KT_Field {
     }
 
     /**
-     * Provede výpis fieldu pomocí echo $this->getField()
-     *
-     * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
-     *
+     * @return string
      */
-    public function renderField() {
-        echo $this->getField();
+    public function getFieldType() {
+        return self::FIELD_TYPE;
     }
 
     /**
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
     public function getField() {
-
         $html = "";
-
-        $html .= "<textarea ";
-        $html .= $this->getBasicHtml();
-        $html .= ">";
-
+        $html .= "<textarea " . $this->getBasicHtml() . ">";
         $html .= $this->getValue();
-
         $html .= "</textarea>";
 
         if ($this->hasErrorMsg()) {
@@ -91,8 +81,15 @@ class KT_Textarea_Field extends KT_Field {
         return $html;
     }
 
-    public function getFieldType() {
-        return self::FIELD_TYPE;
+    /**
+     * Provede výpis fieldu pomocí echo $this->getField()
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     */
+    public function renderField() {
+        echo $this->getField();
     }
 
 }

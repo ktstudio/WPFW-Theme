@@ -24,10 +24,9 @@ final class KT_WP_Metabox_Remover_Configurator {
      * @return \KT_WP_Metabox_Remover_Configurator
      */
     public function removeMetabox($metaboxId, $page, $context) {
-        if (kt_isset_and_not_empty($metaboxId) && kt_isset_and_not_empty($page) && kt_isset_and_not_empty($context)) {
+        if (KT::issetAndNotEmpty($metaboxId) && KT::issetAndNotEmpty($page) && KT::issetAndNotEmpty($context)) {
             array_push($this->data, array($metaboxId, $page, $context));
         }
-
         return $this;
     }
 
@@ -40,7 +39,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removePostTagMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("tagsdiv-post_tag", $postType, "normal");
-
         return $this;
     }
 
@@ -53,7 +51,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeCategoryMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("categorydiv", $postType, "normal");
-
         return $this;
     }
 
@@ -66,7 +63,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeExcerptMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("postexcerpt", $postType, "normal");
-
         return $this;
     }
 
@@ -77,9 +73,8 @@ final class KT_WP_Metabox_Remover_Configurator {
      * @param string $postType
      * @return \KT_WP_Metabox_Remover_Configurator
      */
-    public function removeTrackBacktMetabox($postType = KT_WP_POST_KEY) {
+    public function removeTrackBackMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("trackbacksdiv", $postType, "normal");
-
         return $this;
     }
 
@@ -92,7 +87,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeCommentStatusMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("commentstatusdiv", $postType, "normal");
-
         return $this;
     }
 
@@ -105,7 +99,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeCommentsMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("commentsdiv", $postType, "normal");
-
         return $this;
     }
 
@@ -118,7 +111,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeRevisionsMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("revisionsdiv", $postType, "normal");
-
         return $this;
     }
 
@@ -131,7 +123,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeAuthorMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("authordiv", $postType, "normal");
-
         return $this;
     }
 
@@ -144,7 +135,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeCustomFieldsMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("postcustom", $postType, "normal");
-
         return $this;
     }
 
@@ -157,7 +147,6 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removeSlugMetabox($postType = KT_WP_POST_KEY) {
         $this->removeMetabox("slugdiv", $postType, "normal");
-
         return $this;
     }
 
@@ -170,77 +159,117 @@ final class KT_WP_Metabox_Remover_Configurator {
      */
     public function removePageParentMetabox($postType = KT_WP_PAGE_KEY) {
         $this->removeMetabox("pageparentdiv", $postType, "side");
-
         return $this;
     }
 
     /**
-     * Odstraní metabox s rychlým příspěvkem z nástěnky Wordpressu
+     * Odstraní "Right Now" metabox z nástěnky Wordpressu
      *
      * @return \KT_WP_Metabox_Remover_Configurator
      */
-    public function removeDashboardQuicPress() {
-        $this->removeAuthorMetabox("dashboard_quick_press", "dashboard", "side");
-
+    public function removeDashboardRightNow() {
+        $this->removeMetabox("dashboard_right_now", "dashboard", "normal");
         return $this;
     }
 
     /**
-     * Odstraní metabox s novinkami o Wordpressu z nástěnky Wordpressu
+     * Odstraní "Recent Comments" metabox z nástěnky Wordpressu
      *
      * @return \KT_WP_Metabox_Remover_Configurator
      */
-    public function removeDashboardPrimary() {
-        $this->removeMetabox("dashboard_recent_drafts", "dashboard", "side");
-
+    public function removeDashboardRecentComments() {
+        $this->removeMetabox("dashboard_recent_comments", "dashboard", "normal");
         return $this;
     }
 
     /**
-     * Odstraní metabox s aktivitami z nástěnky Wordpressu
-     *
-     * @return \KT_WP_Metabox_Remover_Configurator
-     */
-    public function removeDashboardActivity() {
-        $this->removeMetabox("dashboard_activity", "dashboard", "side");
-
-        return $this;
-    }
-
-    /**
-     * Odstraní metabox se zpětnými linky z nástěnky Wordpressu
+     * Odstraní "Incoming Links" metabox z nástěnky Wordpressu
      *
      * @return \KT_WP_Metabox_Remover_Configurator
      */
     public function removeDashboardIncomingLinks() {
         $this->removeMetabox("dashboard_incoming_links", "dashboard", "normal");
-
         return $this;
     }
 
     /**
-     * Odstraní metabox s poslendími komentáři z nástěnky Wordpressu
+     * Odstraní "Plugins" metabox z nástěnky Wordpressu
      *
      * @return \KT_WP_Metabox_Remover_Configurator
      */
-    public function removeDashboardComments() {
-        $this->removeMetabox("dashboard_recent_comments", "dashboard", "normal");
+    public function removeDashboardPlugins() {
+        $this->removeMetabox("dashboard_plugins", "dashboard", "normal");
+        return $this;
+    }
 
+    /**
+     * Odstraní "Activity" metabox z nástěnky Wordpressu
+     *
+     * @return \KT_WP_Metabox_Remover_Configurator
+     */
+    public function removeDashboardActivity() {
+        $this->removeMetabox("dashboard_activity", "dashboard", "side");
+        return $this;
+    }
+
+    /**
+     * Odstraní "Quick Press" metabox z nástěnky Wordpressu
+     *
+     * @return \KT_WP_Metabox_Remover_Configurator
+     */
+    public function removeDashboardQuickPress() {
+        $this->removeMetabox("dashboard_quick_press", "dashboard", "side");
+        return $this;
+    }
+
+    /**
+     * Odstraní "Recent Drafts" metabox z nástěnky Wordpressu
+     *
+     * @return \KT_WP_Metabox_Remover_Configurator
+     */
+    public function removeDashboardRecentDrafts() {
+        $this->removeMetabox("dashboard_recent_drafts", "dashboard", "side");
+        return $this;
+    }
+
+    /**
+     * Odstraní "WordPress blog" metabox z nástěnky Wordpressu
+     *
+     * @return \KT_WP_Metabox_Remover_Configurator
+     */
+    public function removeDashboardPrimary() {
+        $this->removeMetabox("dashboard_primary", "dashboard", "side");
+        return $this;
+    }
+
+    /**
+     * Odstraní "Other WordPress News" metabox z nástěnky Wordpressu
+     *
+     * @return \KT_WP_Metabox_Remover_Configurator
+     */
+    public function removeDashboardSecondary() {
+        $this->removeMetabox("dashboard_secondary", "dashboard", "side");
         return $this;
     }
 
     /**
      * Odstraní všechny metabox z nástěnky Wordpressu, které jsou nativně na nástěnku zařazeny
      *
+     * @param bool $withoutRightNow - vše kromě aktuálního přehledu
      * @return \KT_WP_Metabox_Remover_Configurator
      */
-    public function clearWordpressDashboard() {
-        $this->removeDashboardActivity()
-                ->removeDashboardComments()
+    public function clearWordpressDashboard($withoutRightNow = false) {
+        $this->removeDashboardRecentComments()
                 ->removeDashboardIncomingLinks()
+                ->removeDashboardPlugins()
+                ->removeDashboardActivity()
+                ->removeDashboardQuickPress()
+                ->removeDashboardRecentDrafts()
                 ->removeDashboardPrimary()
-                ->removeDashboardQuicPress();
-
+                ->removeDashboardSecondary();
+        if (!$withoutRightNow) {
+            $this->removeDashboardRightNow();
+        }
         return $this;
     }
 

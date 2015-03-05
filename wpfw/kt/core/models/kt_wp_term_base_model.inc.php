@@ -24,11 +24,11 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
             return;
         }
 
-        if (kt_not_isset_or_empty($taxonomy)) {
+        if (KT::notIssetOrEmpty($taxonomy)) {
             throw new KT_Not_Set_Argument_Exception("Taxonomy must be added if term is not stdClass term object");
         }
 
-        if (kt_is_id_format($term)) {
+        if (KT::isIdFormat($term)) {
             $this->initializeByTermid($term, $taxonomy);
             return;
         }
@@ -63,7 +63,7 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
      * @return \KT_WP_Term_Base_Model
      */
     public function setTerm(stdClass $term) {
-        if (kt_isset_and_not_empty($term->term_id)) {
+        if (KT::issetAndNotEmpty($term->term_id)) {
             $this->term = $term;
         }
 
@@ -82,10 +82,6 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
 
     public function getSlug() {
         return $this->getTerm()->slug;
-    }
-
-    public function getTermGroup() {
-        return $this->getTerm()->term_group;
     }
 
     public function getTermTaxonomyId() {
@@ -118,6 +114,19 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
      */
     public function getPermalink() {
         return $permalink = get_term_link($this->getTerm());
+    }
+    
+    /**
+     * Vrátí URL pro zobrazení feedu z daného termu
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $feed
+     * @return string
+     */
+    public function getFeedLink( $feed = "rss2" ){
+        return get_term_feed_link($this->getId(), $this->getTaxonomy(), $feed);
     }
 
     /**
@@ -170,8 +179,8 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
      * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
-     * @param WP_POst $post
-     * @return type
+     * @param WP_Post $post
+     * @return boolean
      */
     public function hasMePost(WP_POst $post) {
         return has_term($this->getId(), $this->getTaxonomy(), $post);
@@ -192,18 +201,16 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
      * @throws InvalidArgumentException
      */
     private function initializeByTermid($termId, $taxonomy) {
-        if (!kt_is_id_format($termId)) {
+        if (!KT::isIdFormat($termId)) {
             throw new KT_Not_Supported_Exception("First parametr $termId is not an ID format");
         }
 
         $term = get_term_by(self::TERM_ID, $termId, $taxonomy);
 
-        if (kt_isset_and_not_empty($term)) {
+        if (KT::issetAndNotEmpty($term)) {
             $this->setTerm($term);
             return $this;
         }
-
-        throw new InvalidArgumentException("Taxonomy : $taxonomy doesn't exist");
     }
 
     /**
@@ -221,12 +228,10 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
     private function initializeByTermSlug($termSlug, $taxonomy) {
         $term = get_term_by(self::TERM_SLUG, $termSlug, $taxonomy);
 
-        if (kt_isset_and_not_empty($term)) {
+        if (KT::issetAndNotEmpty($term)) {
             $this->setTerm($term);
             return $this;
         }
-
-        throw new InvalidArgumentException("Taxonomy : $taxonomy doesn't exist");
     }
 
     // --- statické funkce ---------
@@ -248,7 +253,7 @@ class KT_WP_Term_Base_Model extends KT_Model_Base {
         $modelCollection = array();
         $terms = get_terms($taxonomy, $args);
 
-        if (kt_not_isset_or_empty($terms)) {
+        if (KT::notIssetOrEmpty($terms)) {
             return $modelCollection;
         }
 

@@ -1,8 +1,7 @@
 jQuery(document).ready(function() {
     
     // Validování metaboxu v editaci postu (custom post_type)
-    jQuery("form#post").submit(function(){
-
+    jQuery("form#post, form#kt-custom-page-screen").submit(function(){
         jQuery("#jquery-kt-validator").remove();
 
         var validationResult = jQuery(this).formValidation();
@@ -66,16 +65,7 @@ jQuery(document).ready(function() {
         var element = jQuery(this);
         var input = element.next('input[type=hidden]');
         var toggle = element;
-
-        if (input.val() == '1') {
-            toggle.addClass('off');
-            toggle.removeClass('on');
-            input.attr('value', '0');
-        } else {
-            toggle.addClass('on');
-            toggle.removeClass('off');
-            input.attr('value', '1');
-        }
+        switchToggle(input, toggle);
     });
     
     // Počeštění jQuery data pickeru
@@ -111,6 +101,26 @@ jQuery(document).ready(function() {
         }
     });
     
+    // Ajax událost pro editaci switchFieldu v rámci KT_CRUD_List
+    jQuery("body").on("click", ".edit-crud-switch-list-field", function(){
+        var input = jQuery("#" + jQuery(this).attr("for"));
+        
+        data = {
+            action: "kt_edit_crud_list_switch_field",
+            type: input.data("item-type"),
+            rowId: input.data("item-id"),
+            columnName: input.data("column-name"),
+            value: input.val()
+        };
+        
+        jQuery.post(ajaxurl, data, function(response){
+            if(response === 1){
+                switchToggle(input, jQuery(this));
+            }
+        });
+        
+    });
+    
     // Obsluha a vyvolání WP Gallery pop up okna pro výběr obrázku
     jQuery('body').on("click", ".kt-file-loader", function(e) {
         var kt_input_id = jQuery(this).attr('id');
@@ -144,4 +154,49 @@ jQuery(document).ready(function() {
         });
         jQuery(this).parents(".file-load-box").find("input").val("");
     });
+    
+    // Přepínání switch toggle buttonu na základě inputu a a toggle
+    function switchToggle(input, toggle){
+        if (input.val() == '1') {
+            toggle.addClass('off');
+            toggle.removeClass('on');
+            input.attr('value', '0');
+        } else {
+            toggle.addClass('on');
+            toggle.removeClass('off');
+            input.attr('value', '1');
+        }
+    }
+    
+    // Sortable číselníku vycházející z KT_Catalog_Base_Modelu
+    var sortableTablefixHelper = function(e, ui) {
+	ui.children().each(function() {
+            jQuery(this).width(jQuery(this).width());
+	});
+	return ui;
+    };
+    
+    var sortableTableSave = function(e, ui) {
+        var sortingBody = jQuery("table[data-sortable='true'] tbody");
+        var sortedItems = {};
+        var className = sortingBody.parent("table").data("class-name");
+        
+        sortingBody.find("tr").each(function(i){
+            sortedItems[i] = jQuery(this).data("item-id");
+        });
+        
+        data = {
+            action: "kt_edit_sorting_crud_list",
+            data: sortedItems,
+            class_name: className
+        };
+        
+        jQuery.post(ajaxurl, data);
+    };
+    
+    jQuery("table[data-sortable='true'] tbody").sortable({
+        helper: sortableTablefixHelper,
+        stop: sortableTableSave
+    }).disableSelection();
+    
 });

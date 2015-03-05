@@ -8,14 +8,23 @@
  */
 class KT_MetaBox implements KT_Registrable {
 
+    const CONTEXT_NORMAL = "normal";
+    const CONTEXT_ADVANCED = "advanced";
+    const CONTEXT_SIDE = "side";
+    const PRIORITY_LOW = "low";
+    const PRIORITY_HIGHT = "hight";
+    const PRIORITY_DEFAULT = "default";
+    const PRIORITY_CORE = "core";
+
     private $id;
     private $title;
     private $screen;
-    private $context = "normal";
-    private $priority = "default";
+    private $context = self::CONTEXT_NORMAL;
+    private $priority = self::PRIORITY_DEFAULT;
     private $dataType;
     private $fieldset;
     private $isDefaultAutoSave = true;
+    private $pageTemplate;
     private $customCallback;
     private $className;
     private $idParamName;
@@ -37,7 +46,7 @@ class KT_MetaBox implements KT_Registrable {
         $this->setTitle($title);
         $this->setScreen($screen);
         $this->setDataType(new KT_MetaBox_Data_Types($dataType));
-        if (kt_isset_and_not_empty($fieldset)) {
+        if (KT::issetAndNotEmpty($fieldset)) {
             $this->setFieldset($fieldset);
         }
     }
@@ -65,7 +74,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     private function setId($id) {
-        if (kt_isset_and_not_empty($id)) {
+        if (KT::issetAndNotEmpty($id)) {
             $this->id = $id;
             return $this;
         }
@@ -95,7 +104,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     private function setTitle($title) {
-        if (kt_isset_and_not_empty($title)) {
+        if (KT::issetAndNotEmpty($title)) {
             $this->title = $title;
             return $this;
         }
@@ -125,7 +134,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     private function setScreen($screen) {
-        if (kt_isset_and_not_empty($screen)) {
+        if (KT::issetAndNotEmpty($screen)) {
             $this->screen = $screen;
             return $this;
         }
@@ -155,7 +164,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setContext($context) {
-        if (kt_isset_and_not_empty($context)) {
+        if (KT::issetAndNotEmpty($context)) {
             $this->context = $context;
             return $this;
         }
@@ -185,7 +194,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setPriority($priority) {
-        if (kt_isset_and_not_empty($priority)) {
+        if (KT::issetAndNotEmpty($priority)) {
             $this->priority = $priority;
             return $this;
         }
@@ -224,7 +233,7 @@ class KT_MetaBox implements KT_Registrable {
      * @author Martin Hlaváč
      * @link http://www.ktstudio.cz
      *
-     * @return KT_Form_Fieldset
+     * @return \KT_Form_Fieldset
      */
 
     public function getFieldset() {
@@ -242,7 +251,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     private function setFieldset(KT_Form_Fieldset $fieldset) {
-        if (kt_isset_and_not_empty($fieldset)) {
+        if (KT::issetAndNotEmpty($fieldset)) {
             $this->fieldset = $fieldset;
             return $this;
         }
@@ -280,6 +289,33 @@ class KT_MetaBox implements KT_Registrable {
     }
 
     /**
+     * Vrátí (název) šablony stránky, pokud je zadán
+     *
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     *
+     * @return string
+     */
+    public function getPageTemplate() {
+        return $this->pageTemplate;
+    }
+
+    /**
+     * Nastaví název šablony stránky
+     * Pozn.: tuto funkci je vhodné používat pouze pro metaboxy registrované stránkám, které mají právě zadanou šablonu (template)
+     *
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     *
+     * @param string $pageTemplate
+     * @return \KT_MetaBox
+     */
+    public function setPageTemplate($pageTemplate) {
+        $this->pageTemplate = $pageTemplate;
+        return $this;
+    }
+
+    /**
      * Vrátí název případné vlastní funkce pro callback
      *
      * @author Martin Hlaváč
@@ -303,7 +339,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setCustomCallback($customCallback) {
-        if (kt_isset_and_not_empty($customCallback)) {
+        if (KT::issetAndNotEmpty($customCallback)) {
             $this->customCallback = $customCallback;
             return $this;
         }
@@ -333,7 +369,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setClassName($className) {
-        if (kt_isset_and_not_empty($className)) {
+        if (KT::issetAndNotEmpty($className)) {
             $this->className = $className;
             return $this;
         }
@@ -363,7 +399,7 @@ class KT_MetaBox implements KT_Registrable {
      * @throws KT_Not_Set_Argument_Exception
      */
     public function setIdParamName($idParamName) {
-        if (kt_isset_and_not_empty($idParamName)) {
+        if (KT::issetAndNotEmpty($idParamName)) {
             $this->idParamName = $idParamName;
             return $this;
         }
@@ -378,9 +414,13 @@ class KT_MetaBox implements KT_Registrable {
      */
     public function register() {
         $screen = $this->getScreen();
-        add_action("add_meta_boxes_$screen", array(&$this, "add"));
+        add_action("add_meta_boxes_$screen", array($this, "add"));
         if ($this->getDataType()->getCurrentValue() === KT_MetaBox_Data_Types::POST_META) {
-            add_action("save_post_$screen", array(&$this, "savePost"));
+            add_action("save_post_$screen", array($this, "savePost"));
+        }
+
+        if ($this->getDataType()->getCurrentValue() === KT_MetaBox_Data_Types::CRUD) {
+            add_action("load-$screen", array($this, "saveCrud"));
         }
     }
 
@@ -392,10 +432,12 @@ class KT_MetaBox implements KT_Registrable {
      * @author Martin Hlaváč
      * @link http://www.ktstudio.cz
      */
-    public function add() {
-        add_meta_box(
-                $this->getId(), $this->getTitle(), array(&$this, "metaboxCallback"), $this->getScreen(), $this->getContext(), $this->getPriority(), array($this->getFieldset())
-        );
+    public function add($post) {
+        if ($this->CheckCanHandlePostRequest($post)) {
+            add_meta_box(
+                    $this->getId(), $this->getTitle(), array(&$this, "metaboxCallback"), $this->getScreen(), $this->getContext(), $this->getPriority(), array($this->getFieldset())
+            );
+        }
     }
 
     /**
@@ -411,11 +453,53 @@ class KT_MetaBox implements KT_Registrable {
         if (wp_is_post_revision($postId)) {
             return;
         }
-        $isDefaultAutoSave = $this->getIsDefaultAutoSave();
-        if ($isDefaultAutoSave) {
+        if ($this->CheckCanHandlePostRequest($postId)) {
+            $isDefaultAutoSave = $this->getIsDefaultAutoSave();
             $form = new KT_form();
             $form->addFieldSetByObject($this->getFieldset());
-            $form->saveFieldsetToPostMeta($postId);
+            if ($isDefaultAutoSave && $form->isFormSend()) {
+                $form->saveFieldsetToPostMeta($postId);
+            }
+        }
+    }
+
+    /**
+     * Callback pro akci load-$screen pokud je aktivní datový typ CRUD @see KT_MetaBox_Data_Types::CRUD
+     * Pozn.: Není třeba volat "ručně", jedná se o automatickou systémovou funkci
+     * 
+     * @author Tomáš Kocifaj
+     */
+    public function saveCrud() {
+        $crudInstance = $this->getCrudInstance();
+        $isDefaultAutoSave = $this->getIsDefaultAutoSave();
+        $fieldset = $this->getFieldset();
+        $fieldset->setTitle("");
+        $form = new KT_Form();
+        $form->addFieldSetByObject($fieldset);      
+        
+        $form->validate();
+        
+        if ($isDefaultAutoSave && $form->isFormSend() && !$form->hasError()) {
+            do_action("kt_before_metabox_save_crud", $crudInstance);
+            
+            $fieldset->setFieldsData($fieldset->getDataFromPost());
+            foreach ($fieldset->getFields() as $field) {
+                $crudInstance->addNewColumnToData($field->getName(), $field->getValue());
+            }
+            
+            $crudInstance->saveRow();
+            
+            if (array_key_exists("page", $_GET)) {
+                $pageSlug = $_GET["page"];
+                $redirectUrl = menu_page_url($pageSlug, false) . "&" . $crudInstance::ID_COLUMN . "=" . $crudInstance->getid();
+            } else {
+                wp_die(__("Snažíte se podvádět!?", KT_DOMAIN));
+            }
+            
+            do_action("kt_after_metabox_save_crud", $crudInstance);
+            
+            wp_redirect($redirectUrl);
+            exit;
         }
     }
 
@@ -435,8 +519,9 @@ class KT_MetaBox implements KT_Registrable {
         $dataType = $this->getDataType();
         $currentValue = $dataType->getCurrentValue();
         $fieldset = $args["args"][0];
+        $form = null;
 
-        if (kt_isset_and_not_empty($fieldset) && $fieldset instanceof KT_Form_Fieldset) {
+        if (KT::issetAndNotEmpty($fieldset) && $fieldset instanceof KT_Form_Fieldset) {
             $fieldset->setTitle("");
             $form = new KT_Form();
             $form->addFieldsetByObject($fieldset);
@@ -451,23 +536,18 @@ class KT_MetaBox implements KT_Registrable {
                 break;
             case KT_MetaBox_Data_Types::OPTIONS:
                 if ($isDefaultAutoSave) {
+                    do_action("kt_before_metabox_save_options", $form);
                     $form->saveFieldsetToOptionTable();
+                    do_action("kt_after_metabox_save_options", $form);
                 }
                 $form->loadDataFromWpOption();
                 break;
             case KT_MetaBox_Data_Types::CRUD:
                 $crudInstance = $this->getCrudInstance();
-                if (kt_isset_and_not_empty($crudInstance)) {
-                    $canCrudSave = $form->isFormSend() || !$form->hasError();
+                if (KT::issetAndNotEmpty($crudInstance)) {
                     foreach ($form->getFieldsets() as $fieldset) {
                         $postPrefix = $fieldset->getPostPrefix();
-                        if (kt_isset_and_not_empty($postPrefix)) {
-                            if ($isDefaultAutoSave && $canCrudSave) {
-                                foreach ($fieldset->getFields() as $field) {
-                                    $crudInstance->addNewColumnToData($field->getName(), $field->getValue());
-                                }
-                                $crudInstance->saveRow();
-                            }
+                        if (KT::issetAndNotEmpty($postPrefix)) {
                             $fieldset->setFieldsData($crudInstance->getData());
                         } else {
                             throw new KT_Not_Implemented_Exception(__("Zatím jsou podporované pouze formuláře se zadaným PostPrefixem", KT_DOMAIN));
@@ -607,14 +687,40 @@ class KT_MetaBox implements KT_Registrable {
         $currentValue = $dataType->getCurrentValue();
         if ($currentValue === KT_MetaBox_Data_Types::CRUD) {
             $idparamName = $this->getIdParamName();
-            $idParamValue = $_GET["$idparamName"];
-            if (kt_isset_and_not_empty($idParamValue)) {
-                $className = $this->getClassName();
+            $idParamValue = htmlspecialchars($_GET["$idparamName"]);
+            $className = $this->getClassName();
+            if (KT::issetAndNotEmpty($idParamValue)) {
                 $instance = new $className($idParamValue);
-                return $instance;
+            } else {
+                $instance = new $className();
             }
+            return $instance;
         }
         return null;
+    }
+
+    /**
+     * Interní kontrola zda je možné zpracovat post, resp. požadevek pro přidání, či uložení MetaBoxu
+     *
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @param integer $postId
+     * @return boolean
+     */
+    private function CheckCanHandlePostRequest($post) {
+        if (!$post instanceof WP_Post) {
+            return true;
+        }
+
+        $pageTemplate = $this->getPageTemplate();
+        if (KT::issetAndNotEmpty($pageTemplate)) { // chceme kontrolovat (aktuální) page template
+            $currentPageTemplate = get_post_meta($post->ID, KT_WP_META_KEY_PAGE_TEMPLATE, true);
+            if ($currentPageTemplate !== $pageTemplate) { // (aktuální) page template nesedí => rušíme přidání metaboxu
+                return false;
+            }
+        }
+        return true;
     }
 
 }

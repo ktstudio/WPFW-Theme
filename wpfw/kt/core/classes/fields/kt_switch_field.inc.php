@@ -2,7 +2,7 @@
 
 class KT_Switch_Field extends KT_Field {
 
-    const FIELD_TYPE = "switch";
+    const FIELD_TYPE = "switch switch-toggle";
     const YES = "1";
     const NO = "0";
 
@@ -16,7 +16,7 @@ class KT_Switch_Field extends KT_Field {
     public function __construct($name, $label) {
         parent::__construct($name, $label);
 
-        $this->addClass(self::FIELD_TYPE);
+        $this->addAttrClass(self::FIELD_TYPE);
         $this->setValue(self::NO);
 
         return $this;
@@ -26,7 +26,7 @@ class KT_Switch_Field extends KT_Field {
      * Provede výpis fieldu pomocí echo $this->getField()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      */
     public function renderField() {
@@ -37,18 +37,18 @@ class KT_Switch_Field extends KT_Field {
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
     public function getField() {
         $html = "";
 
-        $html .= "<div class=\"{$this->getClassAttributeContent()}\">";
-        $html .= "<label for=\"{$this->getId()}\" class=\"switch-toggle {$this->getClassAttributeContent()}\" title=\"{$this->getToolTip()}\"></label>";
+        $html .= "<div {$this->getAttrClassString()}>";
+        $html .= "<label for=\"{$this->getAttrValueByName("id")}\" {$this->getAttrClassString()} title=\"{$this->getAfterNameValue("title")}\"></label>";
         $html .= "<input type=\"hidden\" ";
         $html .= $this->getBasicHtml();
-        $html .= "value=\"{$this->getValue()}\" ";
+        $html .= " value=\"{$this->getValue()}\" ";
         $html .= "/>";
 
         if ($this->hasErrorMsg()) {
@@ -62,7 +62,7 @@ class KT_Switch_Field extends KT_Field {
      * Vrátí hodnotu ve fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @param bolean $original - má vrátít originální hodnotu v DB nebo hodnotou pro zobrazení
      * @return null
@@ -77,7 +77,7 @@ class KT_Switch_Field extends KT_Field {
      * Vrátí typ fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -90,7 +90,7 @@ class KT_Switch_Field extends KT_Field {
     /**
      * Převod logického hodnoty na hodnotu pro KT_Switch_Field
      * 
-     * @author Martin Hlaváč <hlavac@ktstudio.cz>
+     * @author Martin Hlaváč
      * @link http://www.ktstudio.cz
      * 
      * @param boolean $value
@@ -98,7 +98,7 @@ class KT_Switch_Field extends KT_Field {
      * @throws InvalidArgumentException
      */
     public static function convertBooleanToSwitch($value) {
-        if (kt_isset_and_not_empty($value)) {
+        if (KT::issetAndNotEmpty($value)) {
             if ($value == true) {
                 return KT_Switch_Field::YES;
             } elseif ($value == false) {
@@ -112,7 +112,7 @@ class KT_Switch_Field extends KT_Field {
     /**
      * Převod KT_Switch_Field hodnoty na logickou hodnotu
      * 
-     * @author Martin Hlaváč <hlavac@ktstudio.cz>
+     * @author Martin Hlaváč
      * @link http://www.ktstudio.cz
      *
      * @param string $value
@@ -120,7 +120,7 @@ class KT_Switch_Field extends KT_Field {
      * @throws InvalidArgumentException
      */
     public static function convertSwitchToBoolean($value) {
-        if (kt_isset_and_not_empty($value)) {
+        if (KT::issetAndNotEmpty($value)) {
             if ($value == KT_Switch_Field::YES) {
                 return true;
             } elseif ($value == KT_Switch_Field::NO) {
@@ -134,7 +134,7 @@ class KT_Switch_Field extends KT_Field {
     /**
      * Vypíše hodnotu KT_Switch_Field, či boolean jako text, tedy Ano/Ne
      *
-     * @author Martin Hlaváč <hlavac@ktstudio.cz>
+     * @author Martin Hlaváč
      * @link http://www.ktstudio.cz 
      * 
      * @param string|boolean $value
@@ -146,7 +146,7 @@ class KT_Switch_Field extends KT_Field {
         } elseif ($value == KT_Switch_Field::NO || $value === false || $value === 0) {
             return __("Ne", KT_DOMAIN);
         } else {
-            echo KT_EMPTY_TEXT;
+            echo KT_EMPTY_SYMBOL;
         }
     }
 

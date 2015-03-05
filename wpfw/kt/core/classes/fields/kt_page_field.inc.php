@@ -11,7 +11,7 @@ class KT_Page_Field extends KT_Select_Field {
      * Field typu select, který jako <option> načte sadu všech stránek
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param type $name
      * @param type $label
@@ -37,12 +37,12 @@ class KT_Page_Field extends KT_Select_Field {
      * Nastaví případnou parent_page, jejížš děti budou nabídnuty v selectu
      * 
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      * 
      * @param int $parentPage
      */
     public function setParentPage($parentPage) {
-        if (kt_is_id_format($parentPage)) {
+        if (KT::isIdFormat($parentPage)) {
             $this->parentPage = $parentPage;
         }
 
@@ -69,7 +69,7 @@ class KT_Page_Field extends KT_Select_Field {
             "post_status" => "publish"
         );
 
-        if (kt_isset_and_not_empty($this->getParentPage())) {
+        if (KT::issetAndNotEmpty($this->getParentPage())) {
             $args["post_parent"] = $this->getParentPage();
         }
 

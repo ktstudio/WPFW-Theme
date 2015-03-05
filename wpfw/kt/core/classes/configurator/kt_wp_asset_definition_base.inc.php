@@ -7,12 +7,13 @@ abstract class KT_WP_Asset_Definition_Base {
     private $deps = array();
     private $version = null;
     private $enqueue = false;
+    private $backEndScript = false;
 
     /**
      * Abstraktní třída pro definici a zakládní Assetů v rámci Wordpressu
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param type $id
      * @param type $source
@@ -62,10 +63,17 @@ abstract class KT_WP_Asset_Definition_Base {
     }
 
     /**
-     * @return boolean
+     * @return Boolean
      */
     public function getEnqueue() {
         return $this->enqueue;
+    }
+    
+    /**
+     * @return Boolean
+     */
+    public function getBackEndScript(){
+        return $this->backEndScript;
     }
 
     // --- settery ------------
@@ -73,8 +81,8 @@ abstract class KT_WP_Asset_Definition_Base {
     /**
      * Nastaví id scriptu (identifikátor), pod kterým bude script registrován
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $id
      * @return \kt_wp_script_handle
@@ -87,8 +95,8 @@ abstract class KT_WP_Asset_Definition_Base {
     /**
      * Nastaví zdroj, odkdud má být script načten - URL
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $source
      * @return \kt_wp_script_handle
@@ -103,8 +111,8 @@ abstract class KT_WP_Asset_Definition_Base {
      * 
      * array("jquery", "kt-core")...
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param array $deps
      * @return \kt_wp_script_handle
@@ -117,8 +125,8 @@ abstract class KT_WP_Asset_Definition_Base {
     /**
      * Nastaví aktuální verzi scriptu - vhodné pro cashování
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $version
      * @return \kt_wp_script_handle
@@ -132,14 +140,25 @@ abstract class KT_WP_Asset_Definition_Base {
      * Nastaví, zda se má daný asset automaticky načíst do frontendu
      * DEFAUTLNĚ : false
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link http://www.KTStudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param type $enqueue
      * @return \KT_WP_Asset_Definition_Base
      */
     public function setEnqueue($enqueue = true) {
         $this->enqueue = $enqueue;
+        return $this;
+    }
+    
+    /**
+     * Nastaví, zda se má script / styl volat v hlavičce administrace namísto Front-endu
+     * 
+     * @param Boolean $isBackEndScript
+     * @return \KT_WP_Asset_Definition_Base
+     */
+    public function setBackEndScript($isBackEndScript = true){
+        $this->backEndScript = $isBackEndScript;
         return $this;
     }
 

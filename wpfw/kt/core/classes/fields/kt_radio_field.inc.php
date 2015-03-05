@@ -21,7 +21,7 @@ class KT_Radio_Field extends KT_Options_Field_Base {
      * Provede výpis fieldu pomocí echo $this->getField()
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      */
     public function renderField() {
@@ -32,7 +32,7 @@ class KT_Radio_Field extends KT_Options_Field_Base {
      * Vrátí HTML strukturu pro zobrazní fieldu
      *
      * @author Tomáš Kocifaj
-     * @link http://www.KTStudio.cz
+     * @link http://www.ktstudio.cz
      *
      * @return string
      */
@@ -40,22 +40,22 @@ class KT_Radio_Field extends KT_Options_Field_Base {
 
         $html = "";
 
-        if (kt_not_isset_or_empty($this->getOptionsData())) {
-            return $html = KT_EMPTY_TEXT;
+        if (KT::notIssetOrEmpty($this->getOptionsData())) {
+            return $html = KT_EMPTY_SYMBOL;
         }
 
         foreach ($this->getOptionsData() as $key => $value) {
 
             $html .= "<span class=\"input-wrap radio\">";
             $html .= "<input type=\"radio\" ";
-            $html .= $this->getBasicHtml();
-            $html .= "value=\"$key\" ";
+            $html .= $this->getBasicHtml( $key );
+            $html .= " value=\"$key\" ";
 
-            if ($key == $this->getValue()) {
+            if ($key == $this->getValue() && $this->getValue() !== null) {
                 $html .= "checked=\"checked\"";
             }
 
-            $html .= "> <span class=\"radio radio-name-{$this->getId()} radio-key-$key \">$value</span> ";
+            $html .= "> <span class=\"radio radio-name-{$this->getAttrValueByName("id")} radio-key-$key \"><label for=\"{$this->getName()}-{$key}\">$value</label></span> ";
 
             $html .= "</span>";
         }
@@ -63,6 +63,25 @@ class KT_Radio_Field extends KT_Options_Field_Base {
         if ($this->hasErrorMsg()) {
             $html .= parent::getHtmlErrorMsg();
         }
+
+        return $html;
+    }
+    
+    /**
+     * Vrátí základní HTML prvky pro Radio field
+     * Class, Name, ID, Title(tooltip), validator jSON
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     * @return string
+     */
+    public function getBasicHtml( $inputName = null) {
+        $html = "";
+        $this->validatorJsonContentInit();
+        $this->setAttrId($this->getName() . "-". $inputName);
+        $html .= $this->getNameAttribute();
+        $html .= $this->getAttributeString();
 
         return $html;
     }

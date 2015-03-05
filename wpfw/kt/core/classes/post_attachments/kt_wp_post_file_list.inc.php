@@ -12,8 +12,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
      * Objekt pro práci s kolekcí souborů (application type) nahrané u příspěvku
      * Použití dashIcons vyžaduje implementaci dashIcons styles do front-endu
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param WP_Post $post
      */
@@ -49,8 +49,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
     /**
      * Nastaví, zda se má při výpisu souborů vypisovat na začátku popisku ikonka
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param boolean $printIcon
      * @return \KT_WP_Post_File_List
@@ -66,8 +66,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
      * 
      * Pokud bude nastavená custom icons, nebude se používat dashicons
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $dashIcons - název class pro dashicons
      * @return \KT_WP_Post_File_List
@@ -80,8 +80,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
     /**
      * Nastaví vlastní iconku z URL, která bude použitá při výpisu souborů
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @param string $customIcon - url na zdroj ikony
      * @return \KT_WP_Post_File_List
@@ -100,15 +100,26 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
      * @param type $class
      * @return string
      */
-    public function getFileList($id = "ktFileListContainer", $class = "ktFiles") {
+    public function getFileList() {
 
         if (!$this->hasFiles()) {
             return "";
         }
+        
+        if(KT_Functions::notIssetOrEmpty($this->getAttrValueByName("id"))){
+            $this->setAttrId("ktFileListContainer");
+        }
+        
+        if(KT_Functions::notIssetOrEmpty($this->getAttrClassString())){
+            $this->addAttrClass("ktFiles");
+        }
+        
+        $this->addAttrClass("postFilesId-" . $this->getPost()->ID)
+                ->addAttrClass($this->getPost()->post_type);
 
         $html = $this->getContainerHeader();
 
-        $html .= "<ul id=\"$id postFilesId-{$this->getPost()->ID}\" class=\"$class {$this->getPost()->post_type}\">";
+        $html .= "<ul {$this->getAttributeString()}>";
 
         foreach ($this->getFiles() as $image) {
             /* @var $image \WP_Post */
@@ -128,8 +139,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
     /**
      * Provede načtení všech souborů typu application u postu a přidá je do kolekce souborů
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return \KT_WP_Post_File_List
      */
@@ -157,8 +168,8 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
     /**
      * Dle nastavení objektu vrátí HTML tag s ikonou
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.cz>
-     * @link www.ktstudio.cz
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
      * 
      * @return string
      */
@@ -168,11 +179,11 @@ class KT_WP_Post_File_List extends KT_WP_Post_Attachments_Base {
             return "";
         }
 
-        if (kt_isset_and_not_empty($this->getCustomIcon())) {
+        if (KT::issetAndNotEmpty($this->getCustomIcon())) {
             return $html = "<span class=\"kt-custom-icon\"><img src=\"{$this->getCustomIcon()}\" alt=\"file-icon\"></span>";
         }
 
-        if (kt_isset_and_not_empty($this->getDashIcons())) {
+        if (KT::issetAndNotEmpty($this->getDashIcons())) {
             return $html = "<span class=\"dashicon {$this->getDashIcons()}\"></span>";
         }
 
