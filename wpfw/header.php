@@ -7,6 +7,7 @@ $ktWpFwThemeModel = new KT_WP_FW_Theme_Model();
     <head>
         <meta charset="<?php bloginfo("charset"); ?>" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="author" content="ktstudio.cz">
         <meta name="robots" content="index,follow" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
