@@ -1,52 +1,79 @@
 <?php
 
+/**
+ * Základní presenter pro výpis obsahu pro detail článku WP FW
+ * 
+ * @author Martin Hlaváč, Tomáš Kocifaj
+ * @link http://www.ktstudio.cz
+ */
 class KT_WP_FW_Post_Presenter extends KT_WP_Post_Base_Presenter {
 
-    /**
-     * Základní presenter pro výpis obsahu pro detail článku WP FW
-     * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.c>
-     * @link http://www.ktstudio.cz
-     * 
-     * @param WP_Post $post
-     */
+    private $similarPosts;
+
     public function __construct(WP_Post $post) {
         parent::__construct($post);
     }
 
-    // --- veřejné funkce ------------
+    // --- getry & setry ---------------------------
 
     /**
-     * Vrátí odkaz a image tag na náhledový obrázek v Large velikosti.
+     * Vrátí WP_Query s podobnými příspěvky pokud jsou k dispizici
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.c>
-     * @link http://www.ktstudio.cz 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
      * 
-     * @return string
+     * @return WP_Query
      */
-    public function getThumbnailWithSelfLink() {
-
-        $html = "";
-
-        if (!$this->getModel()->hasThumbnail()) {
-            return $html;
+    public function getSimilarPosts() {
+        $similarPosts = $this->similarPosts;
+        if (KT::issetAndNotEmpty($similarPosts)) {
+            return $similarPosts;
         }
+        return $this->initSimilarPosts();
+    }
 
-        $image = $this->getThumbnailImage(KT_WP_IMAGE_SIZE_LARGE, array("class" => "img-responsive", "alt" => $this->getModel()->getTitleAttribute()));
-        $linkImage = wp_get_attachment_image_src($this->getModel()->getThumbnailId(), KT_WP_IMAGE_SIZE_LARGE);
+    // --- veřejné funkce ---------------------------
 
-        $html .= "<a href=\"{$linkImage[0]}\" class=\"fbx-link\" title=\"{$this->getModel()->getTitleAttribute()}\">";
-        $html .= $image;
-        $html .= "</a>";
+    /**
+     * Ověření, zda jsou podobné příspěvky k dispizici
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @return bool
+     */
+    public function isSimilarPosts() {
+        $similarPosts = $this->getSimilarPosts();
+        return KT::issetAndNotEmpty($similarPosts) && $similarPosts->have_posts();
+    }
 
-        return $html;
+    /**
+     * Vrátí podobné příspěvky pokud jsou k dispizici
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @param type $withTitle
+     */
+    public function theSimilarPosts($withTitle = true) {
+        if ($this->isSimilarPosts()) {
+            if ($withTitle) {
+                $title = __("Podobné články", KT_DOMAIN);
+                echo "<h2 id=\"similar-posts\">$title</h2>";
+            }
+            $similarPosts = $this->getSimilarPosts();
+            while ($similarPosts->have_posts()) : $similarPosts->the_post();
+                get_template_part("loops/loop", KT_WP_POST_KEY . "-similar");
+            endwhile;
+            wp_reset_postdata();
+        }
     }
 
     /**
      * Vrátí galleri všech obrázků, které jsou u příspěvku nahrané a zhotoví z nich
      * html s celou galerií.
      * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.c>
+     * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz 
      * 
      * @return string
@@ -71,5 +98,26 @@ class KT_WP_FW_Post_Presenter extends KT_WP_Post_Base_Presenter {
         return $html;
     }
 
-    // --- privátní funkce ------------
+    // --- privátní funkce ---------------------------
+
+    /**
+     * Inicializace podobných příspěvků (dle požadovaných parametrů)
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @return WP_Query
+     */
+    private function initSimilarPosts() {
+        return $this->similarPosts = new WP_Query(array(
+            "post_type" => KT_WP_POST_KEY,
+            "post_status" => "publish",
+            "post_parent" => 0,
+            "post__not_in" => array($this->getModel()->getPostId()),
+            "category__in" => $this->getModel()->getTerms(KT_WP_CATEGORY_KEY, array("fields" => "ids")),
+            "posts_per_page" => 4,
+            "orderby" => "rand",
+        ));
+    }
+
 }

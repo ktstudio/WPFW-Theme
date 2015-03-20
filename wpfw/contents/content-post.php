@@ -18,9 +18,10 @@
                 <?php //TODO: $presenter->getNextPostLink(true); ?>
             </div>
             <div class="entryContent">
-                <?php
-                // TODO: echo $presenter->getAuthorBio(true);
-                ?>
+                <?php $presenter->theSimilarPosts(); ?>
+            </div>
+            <div class="entryContent">
+                <?php // TODO: echo $presenter->getAuthorBio(true); ?>
             </div>
         </div>
         <?php get_sidebar(); ?>
