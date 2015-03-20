@@ -17,24 +17,6 @@ class KT_WP_FW_Post_Presenter extends KT_WP_Post_Base_Presenter {
     // --- veřejné funkce ------------
 
     /**
-     * Zjistí, zda má model zadaný excerpt. Pokud ano, tak ho vrátí. V opačném případě nevrátí nic.
-     * 
-     * @author Tomáš Kocifaj <kocifaj@ktstudio.c>
-     * @link http://www.ktstudio.cz
-     * 
-     * @return string
-     */
-    public function getExcerpt() {
-        $html = "";
-
-        if ($this->getModel()->hasExcrept()) {
-            return $html = "<p class=\"perex\">{$this->getModel()->getExcerpt()}</p>";
-        }
-
-        return $html;
-    }
-
-    /**
      * Vrátí odkaz a image tag na náhledový obrázek v Large velikosti.
      * 
      * @author Tomáš Kocifaj <kocifaj@ktstudio.c>

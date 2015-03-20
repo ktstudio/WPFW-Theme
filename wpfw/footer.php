@@ -1,4 +1,3 @@
-<?php global $ktWpFwThemeModel; ?>
 
 <div id="fullWidthLine" class="container-fluid">
     <div class="row">

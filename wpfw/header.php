@@ -1,7 +1,3 @@
-<?php
-global $ktWpFwThemeModel;
-$ktWpFwThemeModel = new KT_WP_FW_Theme_Model();
-?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
     <head>
@@ -11,7 +7,7 @@ $ktWpFwThemeModel = new KT_WP_FW_Theme_Model();
         <meta name="author" content="ktstudio.cz">
         <meta name="robots" content="index,follow" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title><?php bloginfo("name"); ?><?php wp_title("|"); ?></title>
+        <title><?php wp_title("|", true, "right"); ?><?php bloginfo("name"); ?></title>
         <link rel="pingback" href="<?php bloginfo("pingback_url"); ?>" />
         <?php wp_head(); ?>
     </head>
