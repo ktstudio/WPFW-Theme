@@ -39,13 +39,13 @@
 <div id="footerWrap">
     <div class="container">
         <div id="footer" class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="col-lg-7 col-md-6 col-sm-12">
                 <a href="<?php bloginfo("url"); ?>" title="<?php _e("KT Wordpress Framework", KT_DOMAIN); ?>"><?php _e("KT Wordpress Framework", KT_DOMAIN); ?></a>
                 <ul>
                     <?php kt_the_wp_nav_menu(KT_WP_FW_NAVIGATION_MAIN_MENU, 1); ?>
                 </ul>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="col-lg-5 col-md-6 col-sm-12">
                 <p>
                     Copyright &copy; 2010-<?php echo date("Y"); ?> <a href="http://www.ktstudio.cz/" title="KTStudio - tvorba www stránek" target="_blank">KTStudio</a>, 
                     design by <a href="http://www.pixon.cz" title="PiXON Creative studio" target="_blank">PiXON creative studio</a>
