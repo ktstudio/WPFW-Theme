@@ -155,18 +155,6 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     }
 
     /**
-     * Vrátí telefon uživatele - dle rozšíření WP Frameworku
-     *
-     * @author Tomáš Kocifaj
-     * @link http://www.ktstudio.cz
-     *
-     * @return type
-     */
-    public function getPhone() {
-        return $this->getMetaValueByKey(KT_User_Profile_Config::PHONE);
-    }
-
-    /**
      * Vrátí string složeny s jména a příjmení uživatele
      *
      * @author Tomáš Kocifaj
@@ -177,7 +165,43 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
     public function getFullName() {
         return $this->getFirstName() . " " . $this->getLastName();
     }
-    
+
+    /**
+     * Vrátí telefon uživatele - dle rozšíření WP Frameworku
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     * @return mixed string|null
+     */
+    public function getPhone() {
+        return $this->getMetaValueByKey(KT_User_Profile_Config::PHONE);
+    }
+
+    /**
+     * Vrátí popis uživatele
+     *
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     *
+     * @return mixed string|null
+     */
+    public function getDescription() {
+        return $this->getMetaValueByKey("description");
+    }
+
+    /**
+     * Vrátí avatar uživatele
+     *
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     *
+     * @return mixed string|null (HTML)
+     */
+    public function getAvatar() {
+        return get_avatar($this->getId(), 96, "", $this->getDisplayName());
+    }
+
     /**
      * Vrátí URL adresu na detail autora (author.php)
      * 
@@ -185,7 +209,7 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      * 
      * @return string
      */
-    public function getPermalink(){
+    public function getPermalink() {
         return get_author_posts_url($this->getId());
     }
 
@@ -306,10 +330,10 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      */
     public function getMetaValueByKey($metaKey) {
         $userMetas = $this->getWpUserMetas();
-        if(array_key_exists($metaKey, $userMetas)){
+        if (array_key_exists($metaKey, $userMetas)) {
             return $userMetas[$metaKey];
         }
-        
+
         return "";
     }
 

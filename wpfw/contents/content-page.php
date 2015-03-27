@@ -5,10 +5,10 @@
         <div class="col-lg-8 col-md-8">
             <div class="entryContent">
                 <h1 id="postTitle"><?php echo $presenter->getModel()->getTitle(); ?></h1>
-                <?php if ($presenter->getModel()->hasExcrept()) { ?>
-                    <?php echo $presenter->getModel()->getExcerpt(); ?>
-                <?php } ?>
-                <?php the_content(); ?>
+                <?php
+                echo $presenter->getExcerpt();
+                echo $presenter->getModel()->getContent();
+                ?>
             </div>
         </div>
         <?php get_sidebar(); ?>

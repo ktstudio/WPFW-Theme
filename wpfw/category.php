@@ -1,7 +1,5 @@
 <?php
-global $ktWpFwThemeModel;
 $presenter = new KT_WP_Term_Base_Presenter(get_queried_object());
-
 get_header();
 ?>
 <div id="searchLayout" class="container">
