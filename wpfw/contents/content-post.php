@@ -13,15 +13,21 @@
                     <?php echo $presenter->getModel()->getContent(); ?>
                 </div>
             </div>
-            <div class="entryContent">
-                <?php //TODO: $presenter->getPreviousPostLink(true); ?>
-                <?php //TODO: $presenter->getNextPostLink(true); ?>
+            <div id="nextPostNavigation" class="entryContent clearfix">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <small>Předchozí článek</small>
+                    <?php $presenter->getPreviousPostLink(true); ?>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <small>Další článek</small>
+                    <?php $presenter->getNextPostLink(true); ?>
+                </div>
             </div>
             <div class="entryContent">
                 <?php $presenter->theSimilarPosts(); ?>
             </div>
-            <div class="entryContent">
-                <?php // TODO: echo $presenter->getAuthorBio(true); ?>
+            <div id="authorBio" class="entryContent">
+                <?php echo $presenter->getAuthorBio(true); ?>
             </div>
         </div>
         <?php get_sidebar(); ?>

@@ -110,8 +110,8 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
     public function getAuthorBio($withAvatar = false) {
         $description = $this->getModel()->getAuthor()->getDescription();
         if (KT::issetAndNotEmpty($description)) {
-            $title = sprintf(__("O autorovi: %s", KT_DOMAIN), $this->getModel()->getAuthor()->getDisplayName());
-            $html = "<h2>$title</h2>";
+            $title = sprintf(__("%s", KT_DOMAIN), $this->getModel()->getAuthor()->getDisplayName());
+            $html = "<p class=\"author-name\">$title</p>";
             if ($withAvatar) {
                 $avatar = $this->getModel()->getAuthor()->getAvatar();
                 $html .= "<div class=\"author-avatar\">$avatar</div>";
@@ -131,7 +131,8 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @return mixed null|string (HTML)
      */
     public function getPreviousPostLink($inSameCategory = false) {
-        return previous_post("&laquo; %", "", "yes", ($inSameCategory ? "yes" : "no"));
+        previous_post_link("%link", "%title", ($inSameCategory ? "yes" : "no"));
+        //previous_post_link();
     }
 
     /**
@@ -144,7 +145,7 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @return mixed null|string (HTML)
      */
     public function getNextPostLink($inSameCategory = false) {
-        return next_post("% &raquo;", "", "yes", ($inSameCategory ? "yes" : "no"));
+        next_post_link("%link", "%title", ($inSameCategory ? "yes" : "no"));
     }
 
     /**
