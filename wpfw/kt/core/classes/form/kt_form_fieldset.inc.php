@@ -1,6 +1,6 @@
 <?php
 
-class KT_Form_Fieldset extends KT_HTML_Tag_Base {
+class KT_Form_Fieldset extends KT_HTML_Tag_Base implements ArrayAccess {
 
     private $title = null;
     private $description = null;
@@ -17,6 +17,30 @@ class KT_Form_Fieldset extends KT_HTML_Tag_Base {
                 ->setDescription($description);
 
         return $this;
+    }
+
+    // --- arrayAccess ------------------
+
+    public function offsetExists($offset) {
+        $fields = $this->getFields();
+        return array_key_exists($offset, $fields);
+    }
+
+    public function offsetGet($offset) {
+        if ($this->offsetExists($offset)) {
+            $fields = $this->getFields();
+            return $fields[$offset];
+        }
+
+        return null;
+    }
+
+    public function offsetUnset($offset) {
+        $this->removeFieldByName($offset);
+    }
+
+    public function offsetSet($offset, $value) {
+        
     }
 
     // --- gettery ------------------
@@ -238,7 +262,7 @@ class KT_Form_Fieldset extends KT_HTML_Tag_Base {
 
             if ($field->getFieldType() == KT_Text_Field::FIELD_TYPE) {
                 if ($field->getInputType() == KT_Text_Field::INPUT_DATE && KT::issetAndNotEmpty($fieldValue)) {
-                    $fieldValue = date("d.m.Y", $fieldValue);
+                    $fieldValue = KT::dateConvert($fieldValue);
                 }
             }
 
@@ -732,8 +756,7 @@ class KT_Form_Fieldset extends KT_HTML_Tag_Base {
      * @return \KT_Category_Field
      */
     public function addWpCategory($name, $label) {
-        $categoryManager = new KT_Taxonomy_Data_Manager();
-        $categoryManager->setTaxonomy(KT_WP_CATEGORY_KEY);
+        $categoryManager = new KT_Taxonomy_Data_Manager(KT_WP_CATEGORY_KEY);
         $field = $this->fields[$name] = new KT_Select_Field($name, $label);
         $field->setDataManager($categoryManager)->setPostPrefix($this->getPostPrefix());
         return $field;
@@ -753,7 +776,22 @@ class KT_Form_Fieldset extends KT_HTML_Tag_Base {
     public function addWpUsers($name, $label) {
         $field = $this->fields[$name] = new KT_WP_User_Field($name, $label);
         $field->setPostPrefix($this->postPrefix);
+        return $field;
+    }
 
+    /**
+     * Přidá nový typ fieldu KT_Slider_Field - výběr čísla pomocí slideru jQuery UI
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     *
+     * @param string $name
+     * @param string $label
+     * @return \KT_Slider_Field
+     */
+    public function addSlider($name, $label) {
+        $field = $this->fields[$name] = new KT_Slider_Field($name, $label);
+        $field->setPostPrefix($this->postPrefix);
         return $field;
     }
 
@@ -813,12 +851,9 @@ class KT_Form_Fieldset extends KT_HTML_Tag_Base {
 
         $value = $field->getValue();
 
-        if (
-                $field->getFieldType() == KT_Select_Field::FIELD_TYPE ||
-                $field->getFieldType() == KT_Radio_Field::FIELD_TYPE
-        ) {
+        if ($field->getFieldType() == KT_Select_Field::FIELD_TYPE || $field->getFieldType() == KT_Radio_Field::FIELD_TYPE) {
             $fieldOption = $field->getDataManager()->getData();
-            if(array_key_exists($field->getValue(), $fieldOption)){
+            if (array_key_exists($field->getValue(), $fieldOption)) {
                 $value = $fieldOption[$field->getValue()];
             }
         }

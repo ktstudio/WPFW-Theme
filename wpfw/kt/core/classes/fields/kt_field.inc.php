@@ -72,8 +72,9 @@ abstract class KT_Field extends KT_HTML_Tag_Base{
      * @return \KT_Field
      */
     public function setPostPrefix($postPrefix) {
-        $this->postPrefix = $postPrefix;
-        
+        if(KT::issetAndNotEmpty($postPrefix)){
+            $this->postPrefix = $postPrefix;
+        }
         return $this;
     }
 
@@ -222,8 +223,6 @@ abstract class KT_Field extends KT_HTML_Tag_Base{
         return $this->validators;
     }
 
-   
-
     // --- abstraktní funkce ---------------
 
     abstract function renderField();
@@ -233,6 +232,31 @@ abstract class KT_Field extends KT_HTML_Tag_Base{
     abstract function getFieldType();
 
     // --- veřejné funkce ------------------
+    
+    /**
+     * Vrátí HTML s <label> a samotný fieldem
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @return string
+     */
+    public function getControlHtml(){
+        $html = $this->getLabelHtml();
+        return $html .= $this->getField();
+    }
+    
+    /**
+     * Vrátí HTML element <label> pro daný field
+     * 
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @return string
+     */
+    public function getLabelHtml(){
+        return "<label for=\"". $this->getAttrValueByName("id") ."\">". $this->getLabel() ."</label>";
+    }
   
 
     /**
@@ -411,7 +435,7 @@ abstract class KT_Field extends KT_HTML_Tag_Base{
     protected function getNameAttribute() {
 
         $html = "";
-        $afterNameString = $this->getAfterNameValue();
+        $afterNameString = static::getAfterNameValue();
 
         if (KT::issetAndNotEmpty($this->getPostPrefix())) {
             $html .= "name=\"{$this->getPostPrefix()}[{$this->getName()}]$afterNameString\" ";

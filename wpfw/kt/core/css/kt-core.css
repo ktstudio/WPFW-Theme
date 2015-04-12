@@ -298,7 +298,7 @@ div.file-load-box span.span-url > a > span:hover
 
 /** switch button */
 
-label.switch-toggle
+span.switch-toggle
 {
     background: url('../images/switch.png') no-repeat;
     display: inline-block !important;
@@ -309,19 +309,65 @@ label.switch-toggle
     display: none;
 }
 
-label.switch-toggle.on
+span.switch-toggle.on
 {
     background-position: 0px 0px;
 }
 
-label.switch-toggle.off
+span.switch-toggle.off
 {
     background-position: 0px -35px;
 }
 
-label.switch-toggle.hidden
+span.switch-toggle.hidden
 {
     display: none;
+}
+
+/** slider field **/
+.sliderInputElement
+{
+    background: #afc4d0;
+    height: 8px;
+    width: 89%;
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 35px;
+    margiN: 0 8px;
+}
+
+.sliderInputElement input.hidden
+{
+    display: none;
+}
+
+.sliderInputElement .min
+{
+    display: block;
+    float: left;
+}
+
+.sliderInputElement.ui-widget-content .ui-slider-handle
+{
+    text-align: center;
+    font-size: 12px;
+    background: #2ea2cc;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 4px;
+    width: auto;
+    border: 0;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: padding 0.2s ease;
+    text-decoration: none;
+}
+
+.sliderInputElement.ui-widget-content .ui-slider-handle.ui-state-active
+{
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 /** form notifikace **/

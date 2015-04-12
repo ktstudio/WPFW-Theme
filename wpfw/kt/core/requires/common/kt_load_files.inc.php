@@ -21,6 +21,7 @@ function kt_core_admin_scripts_callback() {
     wp_enqueue_style(KT_JQUERY_UI_STYLE);
     // sripts
     wp_enqueue_script(KT_FORM_VALIDATION_SCRIPT);
+    wp_enqueue_script(KT_WP_JQUERY_UI_SLIDER_SCRIPT);
     wp_enqueue_script(KT_CORE_SCRIPT);
 }
 

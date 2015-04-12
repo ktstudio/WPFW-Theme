@@ -131,7 +131,7 @@ function kt_class_autoloader_init($name) {
             }
             // detekce pro případnou klasickou třídu (v adresáři classes)
             $classesPath = path_join($modulePath, KT_CLASSES_FOLDER);
-            $classPath = path_join($classesPath, $fileName);
+            $classPath = path_join($classesPath, $fileName);            
             if (file_exists($classPath)) { // třídy na základní úrovni adresáře
                 require_once($classPath);
                 return;

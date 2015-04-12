@@ -172,7 +172,7 @@ class KT_WP_User_Base_Model extends KT_Model_Base {
      * @author Tomáš Kocifaj
      * @link http://www.ktstudio.cz
      *
-     * @return mixed string|null
+     * @return type
      */
     public function getPhone() {
         return $this->getMetaValueByKey(KT_User_Profile_Config::PHONE);

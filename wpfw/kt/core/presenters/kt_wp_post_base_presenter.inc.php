@@ -13,6 +13,7 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @return \kt_post_type_presenter_base
      */
     function __construct(WP_Post $post = null) {
+        parent::__construct();
         if (KT::issetAndNotEmpty($post)) {
             $postModel = new KT_WP_Post_Base_Model($post);
             $this->setModel($postModel);
@@ -110,8 +111,8 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
     public function getAuthorBio($withAvatar = false) {
         $description = $this->getModel()->getAuthor()->getDescription();
         if (KT::issetAndNotEmpty($description)) {
-            $title = sprintf(__("%s", KT_DOMAIN), $this->getModel()->getAuthor()->getDisplayName());
-            $html = "<p class=\"author-name\">$title</p>";
+            $title = sprintf(__("O autorovi: %s", KT_DOMAIN), $this->getModel()->getAuthor()->getDisplayName());
+            $html = "<h2>$title</h2>";
             if ($withAvatar) {
                 $avatar = $this->getModel()->getAuthor()->getAvatar();
                 $html .= "<div class=\"author-avatar\">$avatar</div>";
@@ -131,8 +132,7 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @return mixed null|string (HTML)
      */
     public function getPreviousPostLink($inSameCategory = false) {
-        previous_post_link("%link", "%title", ($inSameCategory ? "yes" : "no"));
-        //previous_post_link();
+        return previous_post("&laquo; %", "", "yes", ($inSameCategory ? "yes" : "no"));
     }
 
     /**
@@ -145,7 +145,7 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @return mixed null|string (HTML)
      */
     public function getNextPostLink($inSameCategory = false) {
-        next_post_link("%link", "%title", ($inSameCategory ? "yes" : "no"));
+        return next_post("% &raquo;", "", "yes", ($inSameCategory ? "yes" : "no"));
     }
 
     /**
@@ -172,19 +172,29 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
      * @param string $imageSize
      * @param string $tagId
      * @param string $tagClass
+     * @param string $imageAttr
+
      * 
      * @return mixed null|string (HTML)
      */
-    public function getThumbnailImageWithSelfLink($imageSize = KT_WP_IMAGE_SIZE_MEDIUM, $tagId = "thumbImage", $tagClass = "gallery") {
+    public function getThumbnailImageWithSelfLink($imageSize = KT_WP_IMAGE_SIZE_MEDIUM, $tagId = "thumbImage", $tagClass = "gallery", $imageAttr = array("class" => "img-responsive")) {
         if ($this->getModel()->hasThumbnail()) {
             $titleAttribute = $this->getModel()->getTitleAttribute();
-            $image = $this->getThumbnailImage($imageSize, array("class" => "img-responsive", "alt" => $titleAttribute));
+            if (!array_key_exists("alt", $imageAttr)) {
+                $imageAttr["alt"] = $titleAttribute;
+            }
+            $image = $this->getThumbnailImage($imageSize, $imageAttr);
             $linkImage = wp_get_attachment_image_src($this->getModel()->getThumbnailId(), KT_WP_IMAGE_SIZE_LARGE);
-            $html = KT::getTabsIndent(0, "<div id=\"$tagId\" class=\"$tagClass\">", true);
+            $isTagContainer = (KT::issetAndNotEmpty($tagId) && KT::issetAndNotEmpty($tagClass));
+            if ($isTagContainer) {
+                $html = KT::getTabsIndent(0, "<div id=\"$tagId\" class=\"$tagClass\">", true);
+            }
             $html .= KT::getTabsIndent(1, "<a href=\"{$linkImage[0]}\" class=\"fbx-link\" title=\"$titleAttribute\">", true);
             $html .= KT::getTabsIndent(2, $image, true);
             $html .= KT::getTabsIndent(1, "</a>", true);
-            $html .= KT::getTabsIndent(0, "</div>", true, true);
+            if ($isTagContainer) {
+                $html .= KT::getTabsIndent(0, "</div>", true, true);
+            }
             return $html;
         }
         return null;
@@ -210,9 +220,12 @@ class KT_WP_Post_Base_Presenter extends KT_Presenter_Base {
             $thumbnailId = get_post_thumbnail_id($post->ID);
             $image = wp_get_attachment_image_src($thumbnailId, $imageSize);
             $imageSrc = $image[0];
-            $imageAttr["width"] = $image[1];
-            $imageAttr["height"] = $image[2];
-            $imageAttr["alt"] = $post->post_title;
+            $defaults = array("alt" => $post->post_title);
+            if (!array_key_exists("class", $imageAttr) || !KT::stringContains($imageAttr["class"], "img-responsive")) { // pro responzivní obrázky nechceme pevné rozměry
+                $defaults["width"] = $image[1];
+                $defaults["height"] = $image[2];
+            }
+            $imageAttr = wp_parse_args($imageAttr, $defaults);
         } else {
             $imageSrc = $defaultImageSrc;
         }

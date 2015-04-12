@@ -306,6 +306,23 @@ class KT {
         return date($format);
     }
 
+    /**
+     * Převede zadaný datum na požadovaný (nový) formát
+     * 
+     * @author Martin Hlaváč
+     * @link http://www.ktstudio.cz
+     * 
+     * @param string $value (datum)
+     * @param string $format
+     * @return string (datum)
+     */
+    public static function dateConvert($value, $format = "d.m.Y") {
+        if (KT::issetAndNotEmpty($value)) {
+            return date($format, strtotime($value));
+        }
+        return null;
+    }
+
     // --- GENERÁLNÍ FUNKCE ---------------------------
 
     /**
@@ -793,13 +810,13 @@ class KT {
      * @return integer|null
      */
     public static function tryGetBool($value) {
-        if (KT_ITH::issetAndNotEmpty($value)) {
+        if (KT::issetAndNotEmpty($value)) {
             if (is_bool($value)) {
                 return $value;
             }
             return (bool) $value;
         }
-        strtolower((string) $value);
+        $text = strtolower((string) $value);
         if ($text === "1" || $text === "true" || $text === "ano" || $text === "yes") {
             return false;
         }
@@ -810,6 +827,41 @@ class KT {
     }
 
     // --- STRÁNKOVÁNÍ ---------------------------
+
+    /**
+     * Vytvoří stránkování odkazy
+     *
+     * @author Tomáš Kocifaj
+     * @link http://www.ktstudio.cz
+     * 
+     * @global WP_Query $wp_query
+     * @param WP_Query $wpQuery
+     * @param array $userArgs // pro paginate_links (@link http://codex.wordpress.org/Function_Reference/paginate_links)
+     * @return string
+     */
+    public static function getPaginationLinks(WP_Query $wp_query = null, $userArgs = array()) {
+        if (KT::notIssetOrEmpty($wp_query)) {
+            global $wp_query;
+        }
+
+        $paged = get_query_var("paged");
+
+        if (KT::notIssetOrEmpty($paged)) {
+            $paged = htmlspecialchars($paged);
+        }
+
+        $defaultArgs = array(
+            "format" => "/page/%#%",
+            "current" => max(1, $paged),
+            "total" => $wp_query->max_num_pages,
+            "prev_text" => __("Předchozí", KT_DOMAIN),
+            "next_text" => __("Další", KT_DOMAIN)
+        );
+
+        $argsPagination = wp_parse_args($userArgs, $defaultArgs);
+
+        return paginate_links($argsPagination);
+    }
 
     /**
      * Vypíše stránkování určené pro WP loopu v bootstrap stylu
